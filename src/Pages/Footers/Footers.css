@@ -1,0 +1,115 @@
+.Fotter1{
+
+    text-align: center;
+    margin-top: 10vh;
+}
+.Text_Fotter1 h1,.Text_Fotter2 h1,.Our_Mark h1 {
+  white-space: nowrap;
+  font-size: clamp(11px, 2.5vw, 25px);
+  line-height: 1.2;
+  font-family: "Tajawal", sans-serif;
+  color: white ;
+    font-weight: 500;
+}
+
+.Icon {
+  width: 55px;          
+  height: 55px;
+  background-color: white; 
+  border-radius: 50%;    
+  display: flex;          
+  align-items: center;   
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
+}
+
+.Icon img {
+  width: 50%; 
+  height: 50%;
+  object-fit: contain;
+}
+.Icons {
+  display: flex;
+  flex-wrap: wrap;       /* يسمح للأيقونات بالانتقال لسطر جديد عند ضيق الشاشة */
+  gap: 25px;             /* مسافة بين الأيقونات */
+  justify-content: center; /* توسيط الأيقونات */
+  align-items: center;
+  padding: 10px;
+}
+
+.Icon {
+  width: 70px;           /* حجم الدائرة */
+  height: 70px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.Icon img {
+  width: 50%;
+  height: 50%;
+  object-fit: contain;
+}
+
+.Icon:hover {
+  transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+  .Icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .Icon img {
+    width: 60%;
+    height: 60%;
+  }
+}
+@media (max-width: 319px) {
+  .Icon {
+    width: 25px;
+    height: 25px;
+  }
+    .Icon img {
+    width: 40%;
+    height: 40%;
+  }
+}
+.Fotter2{
+  width: 100% !important;
+   background-color: #222;   
+  margin: 0;               /* شيل أي فراغ تحت */
+  padding: 20px 0; 
+}
+.Text_Fotter2 p , .Our_Mark p,.Line_Fotter h1  {  font-family: "Tajawal", sans-serif;
+  font-weight: 400;
+  color: white;
+  font-size: clamp(12px, 3vw, 18px);
+  margin-top: 1rem;
+  line-height: 1.4;}
+  .Text_Fotter2 h1 {
+    font-weight: 800;
+  }
+.Text_Fotter2, .Our_Mark {
+  text-align: right;
+  direction: rtl; /* للنص العربي */
+}
+
+.Line_Fotter{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+}
+.Line{
+  width: 100%;
+  height: 0.2px;
+  background-color: white;
+}

@@ -1,0 +1,60 @@
+.Text_Service{
+    margin-top: 30vh !important;
+    text-align: center;
+
+}
+.Text_Service h1,.Text_Service p{
+       color: white;
+ font-family: "Tajawal", sans-serif;
+  font-style: normal;
+
+
+}
+
+.Text_Service h1 {
+  font-family: "Tajawal", sans-serif;
+  font-weight: 700;
+  color: white;
+  font-size: clamp(18px, 5vw, 50px);
+  margin-top: 2rem;
+}
+.Text_Service p {
+  font-family: "Tajawal", sans-serif;
+  font-weight: 400;
+  color: white;
+  font-size: clamp(12px, 3vw, 30px);
+  margin-top: 1rem;
+  line-height: 1.4;
+}
+.Carts_Service {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* عمودين */
+  gap: 25px; /* المسافة بين المربعات */
+  padding: 16px;
+}
+
+.Cart_Service {
+  background-color: #f9f9f9; /* لون خلفية بسيط */
+  border-radius: 12px; /* زوايا دائرية */
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.Cart_Service h1 {
+  font-size: 1.2rem;
+  color:#0075F9;
+  margin-bottom: 10px;
+}
+
+.Cart_Service p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Responsive على الشاشات الصغيرة */
+@media (max-width: 768px) {
+  .Carts_Service {
+    grid-template-columns: 1fr; /* عمود واحد */
+  }
+}

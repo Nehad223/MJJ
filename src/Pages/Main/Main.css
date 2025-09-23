@@ -15,8 +15,12 @@
     margin-top:1.5% !important;
 
 }
+.Img_Main{
+    padding: 0 24px !important;  
+
+}
 .Text_Main,.Img_Main{
-    margin-top: 25% !important;
+    margin-top: 12vh !important;
     width: 95%;
 }
 .Text_Main h1,.Text_Main p{
@@ -133,7 +137,7 @@
     
     display: block !important;
     margin: auto;
-    margin-top: 25px !important;
+    margin-top: 40px !important;
     width: 200px !important;
     max-width: 90% !important;
     height: 56px !important;
@@ -144,6 +148,9 @@
   }
   .Img_Main{
     margin-top: -40px !important;
+  }
+  .Text_Main{
+    margin-top: -1vh !important;
   }
 
 }

@@ -9,9 +9,7 @@ const Text_Main = () => {
         الاجتماعي، تضع علامتك التجارية في صدارة العالم الرقمي
       </p>
 
-      {/* زر الديسكتوب */}
       <button className='mt-5 btn-desktop'>أبدأ الآن</button>
-
 
     </div>
   )

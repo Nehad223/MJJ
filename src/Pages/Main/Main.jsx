@@ -8,9 +8,9 @@ const Main = () => {
   return (
     <div>
       <NavBar/>
-      <div className='container Main'>
+      <div className='container Main mt-5'>
         <div className='row'>
-        <div className='col-lg-7'>
+        <div className='col-lg-7 mt-lg-5'>
              <Text_Main/>
         </div>
      <div className='col-lg-1'></div>

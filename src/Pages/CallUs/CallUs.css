@@ -1,0 +1,102 @@
+.Text_CallUs{
+    margin-top: 30vh;
+    text-align: center;
+
+}
+.Text_CallUs h1,.Text_CallUs p{
+       color: white;
+ font-family: "Tajawal", sans-serif;
+  font-style: normal;
+
+
+}
+
+.Text_CallUs h1 {
+  font-family: "Tajawal", sans-serif;
+  font-weight: 700;
+  color: white;
+  font-size: clamp(18px, 5vw, 50px);
+  margin-top: 2rem;
+}
+.Text_CallUs p {
+  font-family: "Tajawal", sans-serif;
+  font-weight: 400;
+  color: white;
+  font-size: clamp(12px, 3vw, 30px);
+  margin-top: 1rem;
+  line-height: 1.4;
+}
+.callus-container {
+  display: flex;
+  flex-direction: row;
+   direction: ltr;
+  width: 100%;
+  min-height: 70vh;
+}
+
+/* الصورة */
+.Img_callUs {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.Img_callUs img {
+  max-width: 100%;
+  height: auto;
+  margin-left: -50%;   
+  margin-top: 15%; 
+}
+
+/* الفورم */
+.form-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #fff;
+  padding: 40px;
+  text-align: right;
+}
+
+.Form_CallUs form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.Form_CallUs input,
+.Form_CallUs textarea {
+text-align: right;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.Form_CallUs button {
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.Form_CallUs button:hover {
+  background-color: #0056b3;
+}
+
+/* الموبايل والتابلت */
+@media (max-width: 992px) {
+  .callus-container {
+    flex-direction: column;
+  }
+
+  .Img_callUs {
+    display: none; /* إخفاء الصورة */
+  }
+
+  .form-wrapper {
+    width: 100%;
+    padding: 20px;
+  }
+}

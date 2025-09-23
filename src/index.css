@@ -2,7 +2,10 @@ body{
   margin: 0px;
   padding: 0px;
   background-color: #0071F8 !important;
+    overflow-x: hidden;
+
 }
+
 :root {
   --main-color: #0071F8; 
 }
