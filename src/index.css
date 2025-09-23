@@ -1,0 +1,8 @@
+body{
+  margin: 0px;
+  padding: 0px;
+  background-color: #0071F8 !important;
+}
+:root {
+  --main-color: #0071F8; 
+}

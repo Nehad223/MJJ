@@ -1,0 +1,227 @@
+.nav-link{
+    font-size: 20px !important;
+}
+
+.nav-item .active,.navbar-brand{
+    color: var( --main-color) !important;
+}
+.navbar-brand{
+    font-size: 50px !important;
+    font-family: "Spectral", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+.navbar-nav{
+    margin-top:1.5% !important;
+
+}
+.Text_Main,.Img_Main{
+    margin-top: 25% !important;
+    width: 95%;
+}
+.Text_Main h1,.Text_Main p{
+       color: white;
+ font-family: "Tajawal", sans-serif;
+  font-style: normal;
+
+
+}
+
+.Text_Main h1 {
+  font-family: "Tajawal", sans-serif;
+  font-weight: 700;
+  color: white;
+  font-size: clamp(18px, 5vw, 50px);
+  margin-top: 2rem;
+}
+.Text_Main p {
+  font-family: "Tajawal", sans-serif;
+  font-weight: 400;
+  color: white;
+  font-size: clamp(12px, 3vw, 30px);
+  margin-top: 1rem;
+  line-height: 1.4;
+}
+
+.Text_Main button, .btn-mobile {
+  font-family: "Tajawal", sans-serif;
+  font-weight: 600;
+  text-align: center;
+  color: var(--main-color);
+  border: solid 1px white;
+  background-color: white;
+  border-radius: 100px;
+  width: 100%;
+  max-width: 270px;
+  min-width: 200px;
+  height: 70px;
+  line-height: 70px;
+  font-size: clamp(14px, 2vw, 30px);
+}
+
+@media (max-width: 600px) {
+
+
+  .container .row {
+    display: flex !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+
+  .col-lg-7, .col-lg-4, .col-12 {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+
+
+  .Text_Main, .Img_Main {
+    margin-top: 25px !important;
+    text-align: center !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .navbar-brand{
+    font-size: 40px !important;
+  }
+  .Text_Main h1 {
+   
+    margin-top: 50px !important;
+
+  }
+  .Text_Main p {
+
+    margin-top: 20px !important;
+  }
+
+ .Text_Main button {
+    display: block !important;
+    margin: 14px auto 0 auto !important;
+    width: 220px !important;
+    max-width: 90% !important;
+    height: 56px !important;
+    line-height: 56px !important;
+    font-size: 18px !important;
+  }
+
+  .Img_Main .hero-img, .Img_Main img {
+    display: block !important;
+    margin: 0px auto !important;
+    width: 100% !important;
+    max-width: 340px !important;
+    height: auto !important;
+  }
+
+}
+.btn-mobile {
+  display: none !important;
+}
+.btn-desktop {
+  display: inline-block !important;
+}
+
+/* موبايل */
+@media screen and (max-width: 600px) {
+  .btn-desktop {
+    display: none !important;
+    visibility: hidden;
+  }
+  .btn-mobile {
+    
+    display: block !important;
+    margin: auto;
+    margin-top: 25px !important;
+    width: 200px !important;
+    max-width: 90% !important;
+    height: 56px !important;
+    line-height: 56px !important;
+    font-size: 16px !important;
+    height: 50px;
+    text-align: center !important;
+  }
+  .Img_Main{
+    margin-top: -40px !important;
+  }
+
+}
+/* تابلت (من 601px إلى 991px مثلاً) */
+@media screen and (min-width: 601px) and (max-width: 991px) {
+
+  /* نفس شكل الموبايل لكن أكبر */
+  .container .row {
+    display: flex !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .col-lg-7, .col-lg-4, .col-12 {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+
+  .Text_Main, .Img_Main {
+    margin-top: 40px !important; /* أكبر شوي عن الموبايل */
+    text-align: center !important;
+    padding-left: 32px !important; /* padding أكبر */
+    padding-right: 32px !important;
+  }
+
+  .navbar-brand {
+    font-size: 45px !important; /* بين الموبايل والديسكتوب */
+  }
+
+  .Text_Main h1 {
+    margin-top: 60px !important;
+    font-size: clamp(24px, 4vw, 45px); /* أكبر من الموبايل */
+  }
+
+  .Text_Main p {
+    margin-top: 25px !important;
+    font-size: clamp(14px, 2.5vw, 28px);
+  }
+
+  .Text_Main button {
+    display: block !important;
+    margin: 16px auto 0 auto !important;
+    width: 250px !important; /* أكبر */
+    max-width: 90% !important;
+    height: 60px !important;
+    line-height: 60px !important;
+    font-size: 20px !important;
+  }
+
+  .Img_Main .hero-img, .Img_Main img {
+    display: block !important;
+    margin: 0px auto !important;
+    width: 100% !important;
+    max-width: 400px !important; /* أكبر صورة */
+    height: auto !important;
+  }
+
+  /* نفس فكرة أزرار الموبايل لكن أكبر شوي */
+  .btn-desktop {
+    display: none !important;
+    visibility: hidden;
+  }
+  .btn-mobile {
+    display: block !important;
+    margin: auto;
+    margin-top: 25px !important;
+    width: 230px !important;
+    max-width: 90% !important;
+    height: 60px !important;
+    line-height: 60px !important;
+    font-size: 18px !important;
+    text-align: center !important;
+  }
+
+  .Img_Main {
+    margin-top: -20px !important;
+  }
+}
