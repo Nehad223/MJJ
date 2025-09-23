@@ -1,8 +1,7 @@
+// vite.config.js
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react' // إذا مشروع React
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  // هذا أهم سطر
-  base: '/MJJ/', 
+  base: './', // مهم لحتى ما يعطيك 404 بعد الرفع
 })
