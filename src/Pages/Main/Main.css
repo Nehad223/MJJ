@@ -157,10 +157,9 @@
   }
 
 }
-/* تابلت (من 601px إلى 991px مثلاً) */
+
 @media screen and (min-width: 601px) and (max-width: 991px) {
 
-  /* نفس شكل الموبايل لكن أكبر */
   .container .row {
     display: flex !important;
     flex-direction: column !important;
@@ -176,19 +175,19 @@
   }
 
   .Text_Main, .Img_Main {
-    margin-top: 40px !important; /* أكبر شوي عن الموبايل */
+    margin-top: 40px !important;
     text-align: center !important;
-    padding-left: 32px !important; /* padding أكبر */
+    padding-left: 32px !important; 
     padding-right: 32px !important;
   }
 
   .navbar-brand {
-    font-size: 45px !important; /* بين الموبايل والديسكتوب */
+    font-size: 45px !important;
   }
 
   .Text_Main h1 {
     margin-top: 60px !important;
-    font-size: clamp(24px, 4vw, 45px); /* أكبر من الموبايل */
+    font-size: clamp(24px, 4vw, 45px);
   }
 
   .Text_Main p {
@@ -210,11 +209,11 @@
     display: block !important;
     margin: 0px auto !important;
     width: 100% !important;
-    max-width: 400px !important; /* أكبر صورة */
+    max-width: 400px !important; 
     height: auto !important;
   }
 
-  /* نفس فكرة أزرار الموبايل لكن أكبر شوي */
+ 
   .btn-desktop {
     display: none !important;
     visibility: hidden;

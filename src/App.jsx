@@ -1,10 +1,13 @@
 import { useRef } from "react";
-import NavBar from "./Pages/Main/NavBar"; // أو المسار الصحيح للـ NavBar
+import { Routes, Route } from "react-router-dom";
+import NavBar from "./Pages/Main/NavBar";
 import CallUs from "./Pages/CallUs/CallUs";
 import Main from "./Pages/Main/Main";
 import Projects from "./Pages/Projects/Projects";
 import Service from "./Pages/Service/Service";
 import Footers from "./Pages/Footers/Fotters";
+import WorkDetails from "./Pages/WorkDetails/WorkDetails";
+import DashboardWorks from "./Pages/Admin/DashboardWorks";
 
 function App() {
   const mainRef = useRef(null);
@@ -31,12 +34,11 @@ function App() {
     }
   };
 
-  return (
+  // الصفحة الرئيسية
+  const Home = () => (
     <div>
-      {/* NavBar موجودة في App عشان توصل لكل الـ refs */}
       <NavBar onScrollTo={scrollTo} />
 
-      {/* كل سكشن ملفوف بـ ref */}
       <div ref={mainRef}>
         <Main goToCallUs={() => scrollTo("callus")} />
       </div>
@@ -55,6 +57,15 @@ function App() {
 
       <Footers />
     </div>
+  );
+
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+     <Route path="/work/:id" element={<WorkDetails />} />
+     <Route path="/admin" element={<DashboardWorks/>} />
+
+    </Routes>
   );
 }
 

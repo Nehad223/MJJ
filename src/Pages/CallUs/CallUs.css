@@ -110,3 +110,17 @@ text-align: right;
 
 }
 }
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 3px;
+}
+
+/* رسالة النجاح */
+.success {
+  color: green;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+}

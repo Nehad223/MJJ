@@ -1,32 +1,74 @@
+// Slider.jsx
+import { useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import 'swiper/css'   
+import 'swiper/css'
+import { Navigation } from 'swiper/modules'
+import 'swiper/css/navigation'
 import Card_Slider from './Card_Slider'
-import photo1 from '../../assets/project1.png'
-import photo2 from '../../assets/project2.png'
-import photo3 from '../../assets/project3.png'
-import photo4 from '../../assets/project4.png'
-import { Navigation } from 'swiper/modules'; // ← إضافة الموديول
-import 'swiper/css/navigation'; // CSS للسهام
+import { Link } from 'react-router-dom'
 
 const Slider = () => {
+  const [slides, setSlides] = useState([])
+  const [thumbnails, setThumbnails] = useState({}) // لتخزين اللقطات من الفيديوهات
+
+  useEffect(() => {
+    fetch('https://mohammed229.pythonanywhere.com/main/services/')
+      .then(res => res.json())
+      .then(data => setSlides(data))
+      .catch(err => console.error(err))
+  }, [])
+
+  // دالة للحصول على لقطة من الفيديو
+  const getVideoThumbnail = (videoUrl, time = 1) => {
+    return new Promise((resolve) => {
+      const video = document.createElement('video')
+      video.src = videoUrl
+      video.crossOrigin = 'anonymous' // لو الفيديو من سيرفر ثاني
+      video.currentTime = time
+
+      video.addEventListener('loadeddata', () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = video.videoWidth
+        canvas.height = video.videoHeight
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+        const imgData = canvas.toDataURL('image/jpeg')
+        resolve(imgData)
+      })
+    })
+  }
+
+  // نجمع لقطات الفيديوهات عند تحميل البيانات
+  useEffect(() => {
+    slides.forEach(item => {
+      if (!item.image_url && item.video_url) {
+        getVideoThumbnail(item.video_url).then(img => {
+          setThumbnails(prev => ({ ...prev, [item.id]: img }))
+        })
+      }
+    })
+  }, [slides])
+
   return (
-    <Swiper className='Slider mt-5 mb-5' spaceBetween={40} slidesPerView={'2.4'}
+    <Swiper
+      className="Slider mt-5 mb-5"
+      spaceBetween={40}
+      slidesPerView={2.4}
       modules={[Navigation]}
-  navigation
+      navigation
     >
-      <SwiperSlide>
-        <Card_Slider Img={photo1} Text="حلول تسويق إبداعية" />
-      </SwiperSlide>
-        <SwiperSlide>
-        <Card_Slider Img={photo4} Text="استراتيجية تسويق متكاملة" />
-      </SwiperSlide>
-      <SwiperSlide>
-        <Card_Slider Img={photo2} Text="تسويق رقمي إبداعي" />
-      </SwiperSlide>
-            <SwiperSlide>
-        <Card_Slider Img={photo3} Text="حملة تسويقية مبتكرة" />
-      </SwiperSlide>
-  
+      {slides.map(item => {
+        const displayImg = item.image_url || thumbnails[item.id]
+        if (!displayImg) return null // إذا ما في صورة ولا لقطة → نتجاهل الكارد
+
+        return (
+          <SwiperSlide key={item.id}>
+            <Link to={`/work/${item.id}`} state={{ work: item }} style={{ textDecoration: 'none' }}>
+              <Card_Slider Img={displayImg} Text={item.name} />
+            </Link>
+          </SwiperSlide>
+        )
+      })}
     </Swiper>
   )
 }

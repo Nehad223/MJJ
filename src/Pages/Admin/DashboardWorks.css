@@ -1,0 +1,221 @@
+/* DashboardWorks.css */
+
+.dashboard-container {
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+  font-family: sans-serif;
+  direction: rtl;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.btn-add {
+  background: #0071f8;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-add:hover {
+  background: #0059c8;
+}
+
+/* Grid */
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.work-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.media img,
+.media video {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.info {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.info h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.info .date {
+  font-size: 13px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.info p {
+  margin-top: 10px;
+  color: #333;
+}
+
+.actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit {
+  background: #ffc107;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-delete {
+  background: #dc3545;
+  border: none;
+  padding: 6px 12px;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Empty message */
+.empty {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+  grid-column: 1 / -1;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  padding: 20px;
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.modal-header h3 {
+  margin: 0;
+}
+
+.modal-header .close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form input,
+.form textarea,
+.form select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.preview {
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+}
+
+.preview img,
+.preview video {
+  max-width: 100%;
+  max-height: 200px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-cancel {
+  background: #ccc;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-save {
+  background: #28a745;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .work-card {
+    flex-direction: column;
+  }
+
+  .info h2 {
+    font-size: 16px;
+  }
+}
