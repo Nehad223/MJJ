@@ -56,7 +56,10 @@
   justify-content: center;
   background-color: #fff;
   padding: 40px;
+  border:  solid 1px #fff;
+  border-radius: 10px;
   text-align: right;
+  
 }
 
 .Form_CallUs form {
@@ -92,11 +95,18 @@ text-align: right;
   }
 
   .Img_callUs {
-    display: none; /* إخفاء الصورة */
+    display: none; 
   }
 
   .form-wrapper {
     width: 100%;
     padding: 20px;
   }
+}
+@media (max-width:992px){
+  .Text_CallUs{
+    margin-top: 20vh;
+    text-align: center;
+
+}
 }

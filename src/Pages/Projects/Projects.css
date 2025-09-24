@@ -83,3 +83,10 @@
 }
 
 
+@media (max-width:992px){
+  .Projects{
+    margin-top: 20vh;
+    text-align: center;
+
+}
+}

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Text_Main = () => {
+const Text_Main = ({ goToForm }) => {
   return (
     <div className='Text_Main mt-5'>
       <h1 className='mt-5'>نقود حضورك الرقمي إلى القمة</h1>
@@ -9,8 +9,7 @@ const Text_Main = () => {
         الاجتماعي، تضع علامتك التجارية في صدارة العالم الرقمي
       </p>
 
-      <button className='mt-5 btn-desktop'>أبدأ الآن</button>
-
+      <button className='mt-5 btn-desktop' onClick={goToForm}>أبدأ الآن</button>
     </div>
   )
 }

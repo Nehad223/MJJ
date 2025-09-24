@@ -15,6 +15,9 @@
     margin-top:1.5% !important;
 
 }
+.navbar .nav-link:hover {
+  color: var(--main-color) !important;
+}
 .Img_Main{
     padding: 0 24px !important;  
 

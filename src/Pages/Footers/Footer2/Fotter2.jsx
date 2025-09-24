@@ -6,8 +6,8 @@ import Rights_Fotter2 from './Rights_Fotter2'
 
 const Fotter2 = () => {
   return (
-    <div className='Fotter2 mt-5 '>
-        <div className='container mt-5'>
+    <div className='Fotter2 mt-lg-5 '>
+        <div className='container mt-lg-5'>
             <div className='row'>     <div className='col-lg-6'>   <Text_Fotter2/></div>
             <div className='col-lg-6'><Our_Mark/></div></div>
               
