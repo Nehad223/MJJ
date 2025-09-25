@@ -1,21 +1,5 @@
 import React, { useState } from 'react'
 
-// دالة قراءة الكوكي
-function getCookie(name) {
-  let cookieValue = null
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';')
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim()
-      if (cookie.startsWith(name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
-        break
-      }
-    }
-  }
-  return cookieValue
-}
-
 const Form_CallUs = () => {
   const [formData, setFormData] = useState({
     user_name: '',
@@ -55,19 +39,16 @@ const Form_CallUs = () => {
     if (!validate()) return
 
     try {
-      const csrftoken = getCookie('csrftoken') // جلب CSRF token من الكوكي
-
-      const res = await fetch('https://mohammed229.pythonanywhere.com/main/api/send-message/', {
+      const res = await fetch('https://mohammed229.pythonanywhere.com/main/send-message/', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(formData)
       })
 
-      const data = await res.text() // قراءة نص الرد من السيرفر
-      console.log('Server response:', data) // عرض الرد في الكونسول
+      const data = await res.text()
+      console.log('Server response:', data)
 
       if (!res.ok) {
         setSuccess('حدث خطأ أثناء الإرسال ❌')

@@ -8,6 +8,7 @@ import Service from "./Pages/Service/Service";
 import Footers from "./Pages/Footers/Fotters";
 import WorkDetails from "./Pages/WorkDetails/WorkDetails";
 import DashboardWorks from "./Pages/Admin/DashboardWorks";
+import Messages from "./Pages/Messages/Messages";
 
 function App() {
   const mainRef = useRef(null);
@@ -64,6 +65,7 @@ function App() {
       <Route path="/" element={<Home />} />
      <Route path="/work/:id" element={<WorkDetails />} />
      <Route path="/admin" element={<DashboardWorks/>} />
+     <Route path="/messages" element={<Messages/>} />
 
     </Routes>
   );

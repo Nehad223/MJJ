@@ -1,64 +1,90 @@
+// DashboardWorks.jsx
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "./DashboardWorks.css";
 
 export default function DashboardWorks() {
-  const [works, setWorks] = useState(() => {
-    try {
-      const raw = localStorage.getItem("works_dashboard_v1");
-      return raw ? JSON.parse(raw) : sampleData();
-    } catch (e) {
-      return sampleData();
-    }
-  });
+  const navigate = useNavigate();
 
+  const [works, setWorks] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [editingId, setEditingId] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-
-  const [form, setForm] = useState({
-    title: "",
-    date: "",
-    description: "",
-    type: "image",
-    fileData: null,   // data-uri للمعاينة (صورة)
-    url: "",
-    imageFile: null,  // File object للصورة
-    videoFile: null,  // File object للفيديو
-  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
-  useEffect(() => {
-    localStorage.setItem("works_dashboard_v1", JSON.stringify(works));
-  }, [works]);
+  const [form, setForm] = useState({
+    title: "",
+    date: new Date().toISOString().slice(0, 10),
+    description: "",
+    type: "image",
+    fileData: null,
+    url: "",
+    imageFile: null,
+    videoFile: null,
+    _tempObjectUrl: null,
+  });
 
-  function sampleData() {
-    return [
-      {
-        id: "w-1",
-        title: "تصميم واجهة متجر إلكتروني",
-        date: "2025-09-01",
-        description: "واجهة بسيطة وسريعة للموبايل والديسك توب.",
-        type: "image",
+  // --- اضبط الروابط حسب الباك عندك ---
+  const endpointList = "https://mohammed229.pythonanywhere.com/main/services/"; // GET
+  const endpointAdd = "https://render-project1-qyk2.onrender.com/exercises/add-service-with-video/"; // POST (multipart)
+  const endpointDeleteBase = "https://mohammed229.pythonanywhere.com/main/delete_service/"; // DELETE base (append id)
+  // ------------------------------------------------
+
+  async function fetchWorks() {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(endpointList, { method: "GET" });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        throw new Error(`HTTP ${res.status} ${res.statusText} ${txt ? "- "+txt : ""}`);
+      }
+      const data = await res.json();
+      const array = Array.isArray(data) ? data : (Array.isArray(data.results) ? data.results : []);
+      const normalized = array.map((it) => ({
+        id: it.id || it._id || `${Math.random().toString(36).slice(2, 9)}`,
+        title: it.name || it.title || "",
+        date: it.date || it.created_at || "",
+        description: it.content || it.description || "",
+        type:
+          it.type ||
+          (it.url && /\.(mp4|webm|ogg)$/i.test(it.url) ? "video" : "image"),
         fileData: null,
-        url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=60",
-      },
-      {
-        id: "w-2",
-        title: "فيديو شرح منتج",
-        date: "2025-08-10",
-        description: "فيديو قصير يقدم مميزات المنتج.",
-        type: "video",
-        fileData: null,
-        url: "https://www.w3schools.com/html/mov_bbb.mp4",
-      },
-    ];
+        url: it.url || it.image_url || null,
+        raw: it,
+      }));
+      setWorks(normalized);
+    } catch (err) {
+      console.error("fetchWorks error:", err);
+      setError(err.message || "Error fetching works");
+      setWorks([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
+  useEffect(() => {
+    fetchWorks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (form._tempObjectUrl) {
+        try { URL.revokeObjectURL(form._tempObjectUrl); } catch (e) {}
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function openAdd() {
-    setEditingId(null);
+    if (form._tempObjectUrl) {
+      try { URL.revokeObjectURL(form._tempObjectUrl); } catch (e) {}
+    }
     setForm({
       title: "",
       date: new Date().toISOString().slice(0, 10),
@@ -68,33 +94,51 @@ export default function DashboardWorks() {
       url: "",
       imageFile: null,
       videoFile: null,
+      _tempObjectUrl: null,
     });
     setIsOpen(true);
   }
 
-  function openEdit(id) {
-    const w = works.find((x) => x.id === id);
-    if (!w) return;
-    setEditingId(id);
-    setForm({
-      title: w.title,
-      date: w.date,
-      description: w.description,
-      type: w.type || (w.url && w.url.match(/\.mp4|\.webm|\.ogg/) ? "video" : "image"),
-      fileData: w.fileData || null,
-      url: w.url || "",
-      imageFile: null,
-      videoFile: null,
-    });
-    setIsOpen(true);
-  }
-
-  function handleDelete(id) {
+  async function handleDelete(id) {
     if (!confirm("بدك تحذف هالعمل؟ العملية ما بتنرجع")) return;
-    setWorks((prev) => prev.filter((w) => w.id !== id));
+
+    try {
+      let url;
+      if (endpointDeleteBase.endsWith("/")) {
+        url = `${endpointDeleteBase}${id}/`;
+      } else {
+        url = `${endpointDeleteBase}/${id}/`;
+      }
+
+      const res = await fetch(url, {
+        method: "DELETE",
+      });
+
+      if (res.status === 204) {
+        await fetchWorks();
+        alert("تم الحذف بنجاح");
+        return;
+      }
+
+      const text = await res.text().catch(() => "");
+      let ok = res.ok;
+      try {
+        const j = JSON.parse(text || "{}");
+        if (typeof j.success !== "undefined") ok = !!j.success;
+      } catch (e) {}
+
+      if (!ok) {
+        throw new Error(`HTTP ${res.status} ${res.statusText} ${text ? "- " + text : ""}`);
+      }
+
+      await fetchWorks();
+      alert("تم الحذف بنجاح");
+    } catch (err) {
+      console.error("delete error:", err);
+      alert("خطأ أثناء الحذف: " + (err.message || ""));
+    }
   }
 
-  // image input (preview + file)
   function handleImageChange(e) {
     const f = e.target.files && e.target.files[0];
     if (!f) return setForm((s) => ({ ...s, imageFile: null, fileData: null }));
@@ -105,46 +149,39 @@ export default function DashboardWorks() {
     reader.readAsDataURL(f);
   }
 
-  // video input (no data-uri preview to avoid memory issues, use URL or file object)
   function handleVideoChange(e) {
     const f = e.target.files && e.target.files[0];
-    if (!f) return setForm((s) => ({ ...s, videoFile: null }));
-    setForm((s) => ({ ...s, videoFile: f }));
+    if (!f) return setForm((s) => ({ ...s, videoFile: null, fileData: null }));
+    const objectUrl = URL.createObjectURL(f);
+    if (form._tempObjectUrl) {
+      try { URL.revokeObjectURL(form._tempObjectUrl); } catch (e) {}
+    }
+    setForm((s) => ({ ...s, videoFile: f, fileData: objectUrl, _tempObjectUrl: objectUrl }));
   }
 
-  // الإرسال للباك اند مع progress
   function handleSubmit(e) {
     e.preventDefault();
     if (!form.title.trim()) return alert("المطلوب: عنوان العمل");
     if (!form.description.trim()) return alert("المطلوب: شرح عن العمل");
+    submitCreate();
+  }
 
-    // إعداد FormData حسب اللي بعثوه لك بالـ curl
+  function submitCreate() {
     const fd = new FormData();
     fd.append("name", form.title);
     fd.append("content", form.description);
     fd.append("date", form.date || new Date().toISOString().slice(0, 10));
-
-    // اذا في ملف صورة أرسله
-    if (form.imageFile) {
-      fd.append("image", form.imageFile);
+    if (form.imageFile) fd.append("image", form.imageFile);
+    if (form.videoFile) fd.append("video", form.videoFile);
+    if (!form.imageFile && !form.videoFile && form.url) {
+      fd.append("url", form.url);
     }
-    // لو في ملف فيديو أرسله
-    if (form.videoFile) {
-      fd.append("video", form.videoFile);
-    }
-
-    // لو المستخدم حط رابط بدل رفع، ممكن نبعته كـ url - بس تأكد الباك يدعم:
-    // fd.append('image_url', form.url);
-
-    const endpoint = "https://render-project1-qyk2.onrender.com/exercises/add-service-with-video/";
 
     setUploading(true);
     setProgress(0);
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", endpoint);
-
-    // لو بدك تبعت توكن: xhr.setRequestHeader('Authorization', 'Bearer ...');
+    xhr.open("POST", endpointAdd);
 
     xhr.upload.onprogress = function (event) {
       if (event.lengthComputable) {
@@ -153,57 +190,21 @@ export default function DashboardWorks() {
       }
     };
 
-    xhr.onload = function () {
+    xhr.onload = async function () {
       setUploading(false);
       setProgress(0);
       if (xhr.status >= 200 && xhr.status < 300) {
-        let data = null;
         try {
-          data = JSON.parse(xhr.responseText);
+          await fetchWorks();
+          setIsOpen(false);
+          cleanupFormAndInputs();
+          alert("انضاف العمل بنجاح");
         } catch (err) {
-          data = null;
+          console.warn("fetch after add failed", err);
+          alert("انضاف العمل (جزئياً) — حدث خطأ عند تحديث القائمة.");
         }
-
-        // بناء عنصر جديد للعرض في الواجهة
-        const newItem = data && (data.id || data._id)
-          ? {
-              id: data.id || data._id,
-              title: form.title,
-              date: form.date,
-              description: form.description,
-              type: form.videoFile ? "video" : "image",
-              fileData: null,
-              url: data.url || null, // لو الباك رجع رابط التخزين
-            }
-          : {
-              id: `w-${Date.now()}`,
-              title: form.title,
-              date: form.date,
-              description: form.description,
-              type: form.videoFile ? "video" : "image",
-              fileData: form.fileData || null,
-              url: form.url || null,
-            };
-
-        setWorks((prev) => [newItem, ...prev]);
-        setIsOpen(false);
-        // صفّي الفورم
-        setForm({
-          title: "",
-          date: "",
-          description: "",
-          type: "image",
-          fileData: null,
-          url: "",
-          imageFile: null,
-          videoFile: null,
-        });
-        if (imageInputRef.current) imageInputRef.current.value = "";
-        if (videoInputRef.current) videoInputRef.current.value = "";
-        alert("انضاف العمل بنجاح");
       } else {
-        let responseText = xhr.responseText || "";
-        alert(`خطأ من السيرفر: ${xhr.status} ${xhr.statusText}\n${responseText}`);
+        alert(`خطأ من السيرفر: ${xhr.status} ${xhr.statusText}\n${xhr.responseText || ""}`);
       }
     };
 
@@ -216,12 +217,52 @@ export default function DashboardWorks() {
     xhr.send(fd);
   }
 
+  function cleanupFormAndInputs() {
+    if (form._tempObjectUrl) {
+      try {
+        URL.revokeObjectURL(form._tempObjectUrl);
+      } catch (e) {}
+    }
+    setForm({
+      title: "",
+      date: new Date().toISOString().slice(0, 10),
+      description: "",
+      type: "image",
+      fileData: null,
+      url: "",
+      imageFile: null,
+      videoFile: null,
+      _tempObjectUrl: null,
+    });
+    if (imageInputRef.current) imageInputRef.current.value = "";
+    if (videoInputRef.current) videoInputRef.current.value = "";
+  }
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h1>لوحة تحكم معرض الأعمال</h1>
-        <button onClick={openAdd} className="btn-add">إضافة عمل جديد</button>
+        <div className="header-actions">
+          <button onClick={openAdd} className="btn btn-primary" aria-label="إضافة عمل جديد">
+            <span className="icon">＋</span>
+            <span>إضافة عمل جديد</span>
+          </button>
+
+          {/* زر الرسائل — نفس ستايل الزر الأول */}
+          <button
+            onClick={() => navigate("/messages")}
+            className="btn btn-primary btn-messages"
+            title="صفحة الرسائل"
+            aria-label="الرسائل"
+          >
+            <span className="icon">✉️</span>
+            <span>الرسائل</span>
+          </button>
+        </div>
       </div>
+
+      {loading && <div className="loading">جاري جلب البيانات...</div>}
+      {error && <div className="error">خطأ: {error}</div>}
 
       <div className="works-grid">
         {works.map((w) => (
@@ -229,35 +270,34 @@ export default function DashboardWorks() {
             <div className="media">
               {w.type === "video" ? (
                 <video controls>
-                  <source src={w.fileData || w.url} />
+                  <source src={w.url || w.fileData} />
                   متصفحك لا يدعم الفيديو
                 </video>
               ) : (
-                <img src={w.fileData || w.url} alt={w.title} />
+                <img src={w.url || w.fileData} alt={w.title} />
               )}
             </div>
 
             <div className="info">
-              <h2>{w.title}</h2>
+              <h2 className="work-title">{w.title}</h2>
               <p className="date">{w.date}</p>
-              <p>{w.description}</p>
+              <p className="desc">{w.description}</p>
               <div className="actions">
-                <button onClick={() => openEdit(w.id)} className="btn-edit">تعديل</button>
-                <button onClick={() => handleDelete(w.id)} className="btn-delete">حذف</button>
+                <button onClick={() => handleDelete(w.id)} className="btn btn-danger">حذف</button>
               </div>
             </div>
           </div>
         ))}
 
-        {works.length === 0 && <div className="empty">ما في أعمال بعد. اضغط "إضافة عمل جديد" لتبلش.</div>}
+        {!loading && works.length === 0 && <div className="empty">ما في أعمال لعرضها.</div>}
       </div>
 
       {isOpen && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
-              <h3>{editingId ? "تعديل العمل" : "إضافة عمل جديد"}</h3>
-              <button onClick={() => setIsOpen(false)} className="close">✕</button>
+              <h3>إضافة عمل جديد</h3>
+              <button onClick={() => { setIsOpen(false); }} className="close">✕</button>
             </div>
 
             <form onSubmit={handleSubmit} className="form">
@@ -288,7 +328,6 @@ export default function DashboardWorks() {
               <div className="preview">
                 {form.fileData || form.url ? (
                   form.type === "video" ? (
-                    // عرض الفيديو من url أو من ملف لو رجع رابط
                     <video controls>
                       <source src={form.fileData || form.url} />
                     </video>
@@ -301,17 +340,17 @@ export default function DashboardWorks() {
               </div>
 
               {uploading && (
-                <div style={{ marginTop: 8 }}>
-                  <div style={{ fontSize: 13, marginBottom: 6 }}>جارٍ الرفع: {progress}%</div>
-                  <div style={{ background: "#eee", height: 8, borderRadius: 6, overflow: "hidden" }}>
-                    <div style={{ width: `${progress}%`, height: "100%", background: "#0071f8" }}></div>
+                <div className="upload-progress">
+                  <div className="upload-text">جارٍ الرفع: {progress}%</div>
+                  <div className="bar">
+                    <div className="bar-fill" style={{ width: `${progress}%` }} />
                   </div>
                 </div>
               )}
 
               <div className="form-actions">
-                <button type="button" onClick={() => setIsOpen(false)} className="btn-cancel">إلغاء</button>
-                <button type="submit" className="btn-save" disabled={uploading}>{editingId ? "حفظ التعديلات" : "إضافة العمل"}</button>
+                <button type="button" onClick={() => { setIsOpen(false); }} className="btn btn-secondary">إلغاء</button>
+                <button type="submit" className="btn btn-primary" disabled={uploading}>إضافة العمل</button>
               </div>
             </form>
           </div>
