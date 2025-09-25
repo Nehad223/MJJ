@@ -56,21 +56,25 @@ const Slider = () => {
       slidesPerView={2.4}
       modules={[Navigation]}
       navigation
+      lazy={{ loadPrevNext: true, loadPrevNextAmount: 2 }}
     >
       {slides.map(item => {
         const displayImg = item.image_url || thumbnails[item.id]
         if (!displayImg) return null // إذا ما في صورة ولا لقطة → نتجاهل الكارد
 
         return (
-          <SwiperSlide key={item.id}>
+          <SwiperSlide key={item.id} >
             <Link to={`/work/${item.id}`} state={{ work: item }} style={{ textDecoration: 'none' }}>
               <Card_Slider Img={displayImg} Text={item.name} />
             </Link>
+            
           </SwiperSlide>
         )
       })}
     </Swiper>
+    
   )
 }
 
 export default Slider
+

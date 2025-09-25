@@ -55,7 +55,7 @@ export default function WorkDetails() {
 
       {isDesktop ? (
         <div className="wd-grid-desktop">
-          <div className="wd-image-wrap">
+          <div className="wd-image-wrap mt-5">
             {mediaElement || <div className="wd-image-placeholder">ما في صورة ولا فيديو</div>}
           </div>
           <div className="wd-text container">
