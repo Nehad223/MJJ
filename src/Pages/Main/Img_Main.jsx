@@ -1,13 +1,26 @@
-import React from 'react'
-import photo from '../../assets/Main.png'
+// Img_Main.jsx
+import React, { useEffect } from 'react';
+import photo from '../../assets/Main.png'; // Vite يرجعلك الرابط النهائي مع hash
+
 const Img_Main = () => {
+
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = photo; 
+    document.head.appendChild(link);
+
+    return () => {
+      document.head.removeChild(link); 
+    };
+  }, []);
+
   return (
-    <div className='Img_Main px-5  '>
-      <img src={photo} />
-      
+    <div className="Img_Main px-5">
+      <img src={photo} alt="خدمات رقمية" />
     </div>
-  )
-}
+  );
+};
 
 export default Img_Main;
-

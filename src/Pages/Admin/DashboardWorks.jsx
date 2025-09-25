@@ -2,18 +2,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashboardWorks.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function DashboardWorks() {
   const navigate = useNavigate();
-
   const [works, setWorks] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // --- حالة مودال تغيير كلمة السر ---
   const [isChangePwdOpen, setIsChangePwdOpen] = useState(false);
   const [pwdForm, setPwdForm] = useState({ current: "", newPwd: "", confirm: "" });
   const [changeLoading, setChangeLoading] = useState(false);
@@ -34,13 +33,51 @@ export default function DashboardWorks() {
     _tempObjectUrl: null,
   });
 
-  // --- اضبط الروابط حسب الباك عندك ---
-  const endpointList = "https://mohammed229.pythonanywhere.com/main/services/"; // GET
-  const endpointAdd = "https://render-project1-qyk2.onrender.com/exercises/add-service-with-video/"; // POST (multipart)
-  const endpointDeleteBase = "https://mohammed229.pythonanywhere.com/main/delete_service/"; // DELETE base (append id)
-  // رابط تغيير كلمة السر — حسب المثال اللي عطيت: change-password
-  const endpointChangePassword = "https://mohammed229.pythonanywhere.com/main/change-password/"; // POST { email, old_password, new_password, new_password_confirm }
-  // ------------------------------------------------
+  const endpointList = "https://mohammed229.pythonanywhere.com/main/services/"; 
+  const endpointAdd = "https://render-project1-qyk2.onrender.com/exercises/add-service-with-video/"; 
+  const endpointDeleteBase = "https://mohammed229.pythonanywhere.com/main/delete_service/"; 
+  const endpointChangePassword = "https://mohammed229.pythonanywhere.com/main/change-password/";
+
+  // helper: non-blocking confirm using toast with buttons
+  function confirmToast(message, onConfirm) {
+    const id = toast.info(
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div>{message}</div>
+        <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+          <button
+            onClick={() => {
+              toast.dismiss(id);
+              try { onConfirm(); } catch (e) { console.error(e); }
+            }}
+            style={{
+              padding: "6px 10px",
+              borderRadius: 6,
+              border: "none",
+              cursor: "pointer",
+              background: "#28a745",
+              color: "white",
+            }}
+          >
+            نعم
+          </button>
+          <button
+            onClick={() => toast.dismiss(id)}
+            style={{
+              padding: "6px 10px",
+              borderRadius: 6,
+              border: "none",
+              cursor: "pointer",
+              background: "#6c757d",
+              color: "white",
+            }}
+          >
+            لا
+          </button>
+        </div>
+      </div>,
+      { autoClose: false, closeOnClick: false }
+    );
+  }
 
   async function fetchWorks() {
     setLoading(true);
@@ -70,6 +107,7 @@ export default function DashboardWorks() {
       console.error("fetchWorks error:", err);
       setError(err.message || "Error fetching works");
       setWorks([]);
+      toast.error("خطأ بجلب الأعمال: " + (err.message || ""));
     } finally {
       setLoading(false);
     }
@@ -107,9 +145,7 @@ export default function DashboardWorks() {
     setIsOpen(true);
   }
 
-  async function handleDelete(id) {
-    if (!confirm("بدك تحذف هالعمل؟ العملية ما بتنرجع")) return;
-
+  async function doDelete(id) {
     try {
       let url;
       if (endpointDeleteBase.endsWith("/")) {
@@ -124,7 +160,7 @@ export default function DashboardWorks() {
 
       if (res.status === 204) {
         await fetchWorks();
-        alert("تم الحذف بنجاح");
+        toast.success("تم الحذف بنجاح", { autoClose: 3000 });
         return;
       }
 
@@ -140,11 +176,16 @@ export default function DashboardWorks() {
       }
 
       await fetchWorks();
-      alert("تم الحذف بنجاح");
+      toast.success("تم الحذف بنجاح", { autoClose: 3000 });
     } catch (err) {
       console.error("delete error:", err);
-      alert("خطأ أثناء الحذف: " + (err.message || ""));
+      toast.error("خطأ أثناء الحذف: " + (err.message || ""), { autoClose: 4000 });
     }
+  }
+
+  function handleDelete(id) {
+    // عرض confirm غير محبوس (toast مع أزرار)
+    confirmToast("هل انت متاكد من حذف العمل؟ ", () => doDelete(id));
   }
 
   function handleImageChange(e) {
@@ -169,8 +210,14 @@ export default function DashboardWorks() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!form.title.trim()) return alert("المطلوب: عنوان العمل");
-    if (!form.description.trim()) return alert("المطلوب: شرح عن العمل");
+    if (!form.title.trim()) {
+      toast.warn("المطلوب: عنوان العمل", { autoClose: 2500 });
+      return;
+    }
+    if (!form.description.trim()) {
+      toast.warn("المطلوب: شرح عن العمل", { autoClose: 2500 });
+      return;
+    }
     submitCreate();
   }
 
@@ -206,20 +253,20 @@ export default function DashboardWorks() {
           await fetchWorks();
           setIsOpen(false);
           cleanupFormAndInputs();
-          alert("انضاف العمل بنجاح");
+          toast.success("تم اضافة العمل بنجاح", { autoClose: 3000 });
         } catch (err) {
           console.warn("fetch after add failed", err);
-          alert("انضاف العمل (جزئياً) — حدث خطأ عند تحديث القائمة.");
+          toast.warn("تم اضافة العمل (جزئياً) — حدث خطأ عند تحديث القائمة.", { autoClose: 3500 });
         }
       } else {
-        alert(`خطأ من السيرفر: ${xhr.status} ${xhr.statusText}\n${xhr.responseText || ""}`);
+        toast.error(`خطأ من السيرفر: ${xhr.status} ${xhr.statusText}\n${xhr.responseText || ""}`, { autoClose: 5000 });
       }
     };
 
     xhr.onerror = function () {
       setUploading(false);
       setProgress(0);
-      alert("صارت مشكلة خلال الاتصال بالسيرفر. شيك الـ CORS أو الشبكة.");
+      toast.error("صارت مشكلة خلال الاتصال بالسيرفر. شيك الـ CORS أو الشبكة.", { autoClose: 5000 });
     };
 
     xhr.send(fd);
@@ -261,7 +308,7 @@ export default function DashboardWorks() {
       return setChangeError("مطلوب تعبئة كل الحقول");
     }
     if (pwdForm.newPwd !== pwdForm.confirm) return setChangeError("كلمتا المرور الجديدتين مش متطابقتين");
-    if (pwdForm.newPwd.length < 6) return setChangeError("كلمة المرور لازم تكون 6 أحرف على الأقل");
+    if (pwdForm.newPwd.length < 6) return setChangeError("كلمة المرور يجب ان تكون 6 أحرف على الأقل");
 
     setChangeLoading(true);
     try {
@@ -279,8 +326,6 @@ export default function DashboardWorks() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // لو تستخدم توكن:
-          // "Authorization": `Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify(payload),
       });
@@ -301,29 +346,39 @@ export default function DashboardWorks() {
         throw new Error(`خطأ من السيرفر: ${res.status} ${res.statusText}`);
       }
 
-      alert("تم تغيير كلمة السر بنجاح");
+      toast.success("تم تغيير كلمة السر بنجاح", { autoClose: 3000 });
       setIsChangePwdOpen(false);
-      // اختياري: تسجّل الخروج بعد تغيير كلمة السر
-      // handleLogout();
     } catch (err) {
       console.error("change password error:", err);
       const msg = (err && err.message) ? err.message : "خطأ أثناء تغيير كلمة السر";
       setChangeError(msg);
+      toast.error(msg, { autoClose: 4000 });
     } finally {
       setChangeLoading(false);
     }
   }
 
-  // --- زر خروج (ينظف الجلسة) ---
   function handleLogout() {
     sessionStorage.removeItem("isAuth");
     sessionStorage.removeItem("adminEmail");
-    sessionStorage.removeItem("token"); // لو مخزن توكن
+    sessionStorage.removeItem("token");
+    toast.info("تم تسجيل الخروج", { autoClose: 2000 });
     navigate("/auth");
   }
 
   return (
     <div className="dashboard-container">
+      {/* ToastContainer لازم يكون موجود مرة وحدة بالمشروع */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+        rtl={true}
+      />
+
       <div className="dashboard-header">
         <h1>لوحة تحكم معرض الأعمال</h1>
         <div className="header-actions">
@@ -352,7 +407,7 @@ export default function DashboardWorks() {
             <span>تغيير كلمة السر</span>
           </button>
 
-          <button onClick={handleLogout} className="btn btn-secondary" title="تسجيل الخروج" aria-label="تسجيل الخروج">
+          <button onClick={handleLogout} className="btn btn-danger" title="تسجيل الخروج" aria-label="تسجيل الخروج">
             <span className="icon">⎋</span>
             <span>خروج</span>
           </button>
@@ -455,7 +510,6 @@ export default function DashboardWorks() {
         </div>
       )}
 
-      {/* مودال تغيير كلمة السر */}
       {isChangePwdOpen && (
         <div className="modal">
           <div className="modal-content">

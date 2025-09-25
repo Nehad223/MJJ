@@ -1,5 +1,8 @@
+// Messages.jsx
 import React, { useEffect, useState } from "react";
 import "./Messages.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Messages() {
   const [messages, setMessages] = useState([]);
@@ -38,6 +41,7 @@ export default function Messages() {
     } catch (err) {
       console.error("fetch messages error:", err);
       setFetchError("تعذر جلب الرسائل. تفقد السيرفر أو اتصال الشبكة.");
+      toast.error("تعذر جلب الرسائل. شيك الكونسول", { autoClose: 3500 });
     } finally {
       setLoading(false);
     }
@@ -56,14 +60,59 @@ export default function Messages() {
     return name.includes(q) || email.includes(q) || msg.includes(q);
   });
 
-  const handleDelete = async (id) => {
-    if (!id) return;
-    // optional confirm
-    const ok = window.confirm("أكيد تريد تحذف هالرسالة؟ العملية ما بتنرجع.");
-    if (!ok) return;
+  // helper: non-blocking confirm using toast with buttons
+  function confirmToast(message, onConfirm) {
+    const id = toast.info(
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div>{message}</div>
+        <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+          <button
+            onClick={() => {
+              toast.dismiss(id);
+              try { onConfirm(); } catch (e) { console.error(e); }
+            }}
+            style={{
+              padding: "6px 10px",
+              borderRadius: 6,
+              border: "none",
+              cursor: "pointer",
+              background: "#28a745",
+              color: "white",
+            }}
+          >
+            نعم
+          </button>
+          <button
+            onClick={() => toast.dismiss(id)}
+            style={{
+              padding: "6px 10px",
+              borderRadius: 6,
+              border: "none",
+              cursor: "pointer",
+              background: "#6c757d",
+              color: "white",
+            }}
+          >
+            لا
+          </button>
+        </div>
+      </div>,
+      { autoClose: false, closeOnClick: false }
+    );
+  }
 
+  const handleDelete = (id) => {
+    if (!id) return;
+    confirmToast("هل انت متاكد من حذف الرسالة؟", () => doDelete(id));
+  };
+
+  const doDelete = async (id) => {
     // إضافة حالة حذف
-    setDeletingIds((s) => new Set(s).add(id));
+    setDeletingIds((s) => {
+      const next = new Set(s);
+      next.add(String(id));
+      return next;
+    });
 
     try {
       const url = `https://mohammed229.pythonanywhere.com/main/delete_message/${id}/`;
@@ -80,16 +129,15 @@ export default function Messages() {
 
       // إزالة الرسالة من الواجهة (optimistic)
       setMessages((prev) => prev.filter((m) => String(m.id) !== String(id)));
+      toast.success("تم حذف الرسالة", { autoClose: 3000 });
     } catch (err) {
       console.error("delete message error:", err);
-      alert(
-        "صارت مشكلة أثناء الحذف. تأكد من السيرفر أو جرب تحديث الصفحة. (تفاصيل في الكونسول)."
-      );
+      toast.error("صارت مشكلة أثناء الحذف. شيك الكونسول.", { autoClose: 4500 });
     } finally {
       // إزالة حالة الحذف
       setDeletingIds((s) => {
         const next = new Set(s);
-        next.delete(id);
+        next.delete(String(id));
         return next;
       });
     }
@@ -97,6 +145,18 @@ export default function Messages() {
 
   return (
     <div className="messages-page">
+      {/* لو ماني ضفت ToastContainer بمكان ثاني، خلي هالمكون هنا.
+          تأكد ما يكون أكثر من ToastContainer واحد بالـ app */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+        rtl={true}
+      />
+
       <header className="mp-header">
         <h1>📩 رسائل العملاء</h1>
         <div className="header-actions">
@@ -123,7 +183,7 @@ export default function Messages() {
           <ul className="messages-list">
             {filtered.map((m, idx) => {
               const id = m.id ?? idx;
-              const isDeleting = deletingIds.has(String(id)) || deletingIds.has(id);
+              const isDeleting = deletingIds.has(String(id));
               return (
                 <li key={id} className="message-item">
                   <div className="meta">

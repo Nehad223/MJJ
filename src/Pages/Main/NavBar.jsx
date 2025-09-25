@@ -40,3 +40,4 @@ const NavBar = ({ onScrollTo }) => {
 };
 
 export default NavBar;
+

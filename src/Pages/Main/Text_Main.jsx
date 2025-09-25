@@ -15,3 +15,4 @@ const Text_Main = ({ goToForm }) => {
 }
 
 export default Text_Main
+

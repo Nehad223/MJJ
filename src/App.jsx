@@ -11,7 +11,8 @@ import WorkDetails from "./Pages/WorkDetails/WorkDetails";
 import DashboardWorks from "./Pages/Admin/DashboardWorks";
 import Messages from "./Pages/Messages/Messages";
 import Auth from "./Pages/Auth/Auth";
-import ProtectedRoute from "./Pages/Auth/ProtectedRoute"; // ✅ استدعاء الملف الجديد
+import ProtectedRoute from "./Pages/Auth/ProtectedRoute";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const mainRef = useRef(null);
@@ -67,7 +68,6 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/work/:id" element={<WorkDetails />} />
 
-      {/* 🛡️ المسارات المحمية */}
       <Route
         path="/admin"
         element={
@@ -85,7 +85,6 @@ function App() {
         }
       />
 
-      {/* صفحة تسجيل الدخول */}
       <Route path="/auth" element={<Auth />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
