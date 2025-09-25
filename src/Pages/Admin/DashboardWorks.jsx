@@ -1,3 +1,4 @@
+// DashboardWorks.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashboardWorks.css";
@@ -37,8 +38,8 @@ export default function DashboardWorks() {
   const endpointList = "https://mohammed229.pythonanywhere.com/main/services/"; // GET
   const endpointAdd = "https://render-project1-qyk2.onrender.com/exercises/add-service-with-video/"; // POST (multipart)
   const endpointDeleteBase = "https://mohammed229.pythonanywhere.com/main/delete_service/"; // DELETE base (append id)
-  // رابط تغيير كلمة السر - عدله حسب الـ backend عندك
-  const endpointChangePassword = "https://mohammed229.pythonanywhere.com/main/change_password/"; // POST {current_password, new_password}
+  // رابط تغيير كلمة السر — حسب المثال اللي عطيت: change-password
+  const endpointChangePassword = "https://mohammed229.pythonanywhere.com/main/change-password/"; // POST { email, old_password, new_password, new_password_confirm }
   // ------------------------------------------------
 
   async function fetchWorks() {
@@ -257,42 +258,68 @@ export default function DashboardWorks() {
     setChangeError(null);
 
     if (!pwdForm.current.trim() || !pwdForm.newPwd.trim() || !pwdForm.confirm.trim()) {
-      return setChangeError("مطلوب تعبيء كل الحقول");
+      return setChangeError("مطلوب تعبئة كل الحقول");
     }
     if (pwdForm.newPwd !== pwdForm.confirm) return setChangeError("كلمتا المرور الجديدتين مش متطابقتين");
     if (pwdForm.newPwd.length < 6) return setChangeError("كلمة المرور لازم تكون 6 أحرف على الأقل");
 
     setChangeLoading(true);
     try {
+      // الحصول على الإيميل من sessionStorage (جلسة)
+      const email = sessionStorage.getItem("adminEmail") || "";
+
+      const payload = {
+        email,
+        old_password: pwdForm.current,
+        new_password: pwdForm.newPwd,
+        new_password_confirm: pwdForm.confirm,
+      };
+
       const res = await fetch(endpointChangePassword, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // لو عندك توكن أضف Authorization هنا، مثال:
-          // "Authorization": `Bearer ${localStorage.getItem('token')}`
+          // لو تستخدم توكن:
+          // "Authorization": `Bearer ${sessionStorage.getItem('token')}`
         },
-        body: JSON.stringify({ current_password: pwdForm.current, new_password: pwdForm.newPwd }),
+        body: JSON.stringify(payload),
       });
 
       const txt = await res.text().catch(() => "");
-      let ok = res.ok;
-      try {
-        const j = JSON.parse(txt || "{}");
-        if (typeof j.success !== "undefined") ok = !!j.success;
-      } catch (e) {}
+      let json = {};
+      try { json = JSON.parse(txt || "{}"); } catch (e) {}
+
+      if (res.status === 401) {
+        throw new Error(json.message || "كلمة السر الحالية غير صحيحة");
+      }
+
+      const ok = res.ok || (typeof json.success !== "undefined" ? !!json.success : false);
 
       if (!ok) {
-        throw new Error(txt || `${res.status} ${res.statusText}`);
+        const serverMsg = (json.message || json.error || txt || "").toString();
+        if (serverMsg) throw new Error(serverMsg);
+        throw new Error(`خطأ من السيرفر: ${res.status} ${res.statusText}`);
       }
 
       alert("تم تغيير كلمة السر بنجاح");
       setIsChangePwdOpen(false);
+      // اختياري: تسجّل الخروج بعد تغيير كلمة السر
+      // handleLogout();
     } catch (err) {
       console.error("change password error:", err);
-      setChangeError(err.message || "خطأ أثناء تغيير كلمة السر");
+      const msg = (err && err.message) ? err.message : "خطأ أثناء تغيير كلمة السر";
+      setChangeError(msg);
     } finally {
       setChangeLoading(false);
     }
+  }
+
+  // --- زر خروج (ينظف الجلسة) ---
+  function handleLogout() {
+    sessionStorage.removeItem("isAuth");
+    sessionStorage.removeItem("adminEmail");
+    sessionStorage.removeItem("token"); // لو مخزن توكن
+    navigate("/auth");
   }
 
   return (
@@ -305,7 +332,6 @@ export default function DashboardWorks() {
             <span>إضافة عمل جديد</span>
           </button>
 
-          {/* زر الرسائل — نفس ستايل الزر الأول */}
           <button
             onClick={() => navigate("/messages")}
             className="btn btn-primary btn-messages"
@@ -316,7 +342,6 @@ export default function DashboardWorks() {
             <span>الرسائل</span>
           </button>
 
-          {/* زر تغيير كلمة السر — نفس ستايل الزر */}
           <button
             onClick={openChangePwd}
             className="btn btn-primary btn-change-pwd"
@@ -325,6 +350,11 @@ export default function DashboardWorks() {
           >
             <span className="icon">🔒</span>
             <span>تغيير كلمة السر</span>
+          </button>
+
+          <button onClick={handleLogout} className="btn btn-secondary" title="تسجيل الخروج" aria-label="تسجيل الخروج">
+            <span className="icon">⎋</span>
+            <span>خروج</span>
           </button>
         </div>
       </div>

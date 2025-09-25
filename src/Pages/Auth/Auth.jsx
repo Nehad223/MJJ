@@ -25,13 +25,23 @@ export default function Auth() {
         }
       );
 
-      const data = await res.json();
+      const dataText = await res.text().catch(() => "");
+      let data = {};
+      try { data = JSON.parse(dataText || "{}"); } catch (e) { /* ignore parse error */ }
+
       setLoading(false);
 
       if (res.ok && data.success) {
-        // ✅ نحفظ حالة تسجيل الدخول
-        localStorage.setItem("isAuth", "true");
-        // نوجّه المستخدم للداشبورد
+        // نحفظ حالة الجلسة في sessionStorage (تختفي لما يغلّق التبويب/المتصفح)
+        sessionStorage.setItem("isAuth", "true");
+        // نخزن الإيميل اللي بيرجع من السيرفر أو اللي دخله المستخدم
+        if (data.email) sessionStorage.setItem("adminEmail", data.email);
+        else sessionStorage.setItem("adminEmail", email);
+
+        // لو الـ API رجع توكن تحفظه (اختياري) - مثال:
+        // if (data.token) sessionStorage.setItem("token", data.token);
+
+        // توجيه للداشبورد
         window.location.href = "/admin";
         return;
       }
@@ -41,7 +51,7 @@ export default function Auth() {
         return;
       }
 
-      const msg = (data.message || data.error || "").toString().toLowerCase();
+      const msg = (data.message || data.error || dataText || "").toString().toLowerCase();
       if (msg.includes("password") || msg.includes("pass") || msg.includes("كلمة")) {
         setError("كلمة السر خاطئة!");
         return;
@@ -80,7 +90,7 @@ export default function Auth() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          autoComplete="new-password"
+          autoComplete="current-password"
         />
         <button type="submit" disabled={loading}>
           {loading ? "جارٍ تسجيل الدخول..." : "تسجيل الدخول"}

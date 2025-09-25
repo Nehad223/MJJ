@@ -4,8 +4,10 @@ import { Navigate } from "react-router-dom";
 
 export default function ProtectedRoute({ children }) {
   try {
-    const isAuth = localStorage.getItem("isAuth");
-    return isAuth === "true" ? children : <Navigate to="/auth" replace />;
+    
+    const isAuth = sessionStorage.getItem("isAuth") === "true";
+    if (!isAuth) return <Navigate to="/auth" replace />;
+    return children;
   } catch (err) {
     return <Navigate to="/auth" replace />;
   }
