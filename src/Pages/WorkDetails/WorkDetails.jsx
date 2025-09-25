@@ -28,7 +28,7 @@ export default function WorkDetails() {
   if (!workFromState) {
     return (
       <div className="wd-container">
-        <p>ما في بيانات لعرضها — افتح تفاصيل العمل عن طريق السلايدر.</p>
+        <p>لا يوجد بيانات لعرضها — افتح تفاصيل العمل عن طريق السلايدر.</p>
         <p>أو <Link to="/">ارجع للسلايدر</Link> وحاول مرة تانية.</p>
       </div>
     );
@@ -56,7 +56,7 @@ export default function WorkDetails() {
       {isDesktop ? (
         <div className="wd-grid-desktop">
           <div className="wd-image-wrap mt-5">
-            {mediaElement || <div className="wd-image-placeholder">ما في صورة ولا فيديو</div>}
+            {mediaElement || <div className="wd-image-placeholder">لا يوجد صورة ولا فيديو</div>}
           </div>
           <div className="wd-text container">
             <div className="wd-company">{company}</div>
@@ -73,7 +73,7 @@ export default function WorkDetails() {
             <div className="wd-date">{formatDate(date)}</div>
           </div>
           <div className="wd-image-wrap">
-            {mediaElement || <div className="wd-image-placeholder">ما في صورة ولا فيديو</div>}
+            {mediaElement || <div className="wd-image-placeholder">لا يوجد صورة ولا فيديو</div>}
           </div>
           <div className="wd-content"><p>{content}</p></div>
         </div>

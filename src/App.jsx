@@ -1,5 +1,6 @@
+// App.jsx
 import { useRef } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import NavBar from "./Pages/Main/NavBar";
 import CallUs from "./Pages/CallUs/CallUs";
 import Main from "./Pages/Main/Main";
@@ -9,6 +10,8 @@ import Footers from "./Pages/Footers/Fotters";
 import WorkDetails from "./Pages/WorkDetails/WorkDetails";
 import DashboardWorks from "./Pages/Admin/DashboardWorks";
 import Messages from "./Pages/Messages/Messages";
+import Auth from "./Pages/Auth/Auth";
+import ProtectedRoute from "./Pages/Auth/ProtectedRoute"; // ✅ استدعاء الملف الجديد
 
 function App() {
   const mainRef = useRef(null);
@@ -35,7 +38,6 @@ function App() {
     }
   };
 
-  // الصفحة الرئيسية
   const Home = () => (
     <div>
       <NavBar onScrollTo={scrollTo} />
@@ -63,10 +65,29 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-     <Route path="/work/:id" element={<WorkDetails />} />
-     <Route path="/admin" element={<DashboardWorks/>} />
-     <Route path="/messages" element={<Messages/>} />
+      <Route path="/work/:id" element={<WorkDetails />} />
 
+      {/* 🛡️ المسارات المحمية */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <DashboardWorks />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/messages"
+        element={
+          <ProtectedRoute>
+            <Messages />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* صفحة تسجيل الدخول */}
+      <Route path="/auth" element={<Auth />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

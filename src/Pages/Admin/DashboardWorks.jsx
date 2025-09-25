@@ -1,4 +1,3 @@
-// DashboardWorks.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashboardWorks.css";
@@ -12,6 +11,12 @@ export default function DashboardWorks() {
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // --- حالة مودال تغيير كلمة السر ---
+  const [isChangePwdOpen, setIsChangePwdOpen] = useState(false);
+  const [pwdForm, setPwdForm] = useState({ current: "", newPwd: "", confirm: "" });
+  const [changeLoading, setChangeLoading] = useState(false);
+  const [changeError, setChangeError] = useState(null);
 
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
@@ -32,6 +37,8 @@ export default function DashboardWorks() {
   const endpointList = "https://mohammed229.pythonanywhere.com/main/services/"; // GET
   const endpointAdd = "https://render-project1-qyk2.onrender.com/exercises/add-service-with-video/"; // POST (multipart)
   const endpointDeleteBase = "https://mohammed229.pythonanywhere.com/main/delete_service/"; // DELETE base (append id)
+  // رابط تغيير كلمة السر - عدله حسب الـ backend عندك
+  const endpointChangePassword = "https://mohammed229.pythonanywhere.com/main/change_password/"; // POST {current_password, new_password}
   // ------------------------------------------------
 
   async function fetchWorks() {
@@ -238,6 +245,56 @@ export default function DashboardWorks() {
     if (videoInputRef.current) videoInputRef.current.value = "";
   }
 
+  // --- وظائف تغيير كلمة السر ---
+  function openChangePwd() {
+    setPwdForm({ current: "", newPwd: "", confirm: "" });
+    setChangeError(null);
+    setIsChangePwdOpen(true);
+  }
+
+  async function submitChangePassword(e) {
+    e.preventDefault();
+    setChangeError(null);
+
+    if (!pwdForm.current.trim() || !pwdForm.newPwd.trim() || !pwdForm.confirm.trim()) {
+      return setChangeError("مطلوب تعبيء كل الحقول");
+    }
+    if (pwdForm.newPwd !== pwdForm.confirm) return setChangeError("كلمتا المرور الجديدتين مش متطابقتين");
+    if (pwdForm.newPwd.length < 6) return setChangeError("كلمة المرور لازم تكون 6 أحرف على الأقل");
+
+    setChangeLoading(true);
+    try {
+      const res = await fetch(endpointChangePassword, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // لو عندك توكن أضف Authorization هنا، مثال:
+          // "Authorization": `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ current_password: pwdForm.current, new_password: pwdForm.newPwd }),
+      });
+
+      const txt = await res.text().catch(() => "");
+      let ok = res.ok;
+      try {
+        const j = JSON.parse(txt || "{}");
+        if (typeof j.success !== "undefined") ok = !!j.success;
+      } catch (e) {}
+
+      if (!ok) {
+        throw new Error(txt || `${res.status} ${res.statusText}`);
+      }
+
+      alert("تم تغيير كلمة السر بنجاح");
+      setIsChangePwdOpen(false);
+    } catch (err) {
+      console.error("change password error:", err);
+      setChangeError(err.message || "خطأ أثناء تغيير كلمة السر");
+    } finally {
+      setChangeLoading(false);
+    }
+  }
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
@@ -257,6 +314,17 @@ export default function DashboardWorks() {
           >
             <span className="icon">✉️</span>
             <span>الرسائل</span>
+          </button>
+
+          {/* زر تغيير كلمة السر — نفس ستايل الزر */}
+          <button
+            onClick={openChangePwd}
+            className="btn btn-primary btn-change-pwd"
+            title="تغيير كلمة السر"
+            aria-label="تغيير كلمة السر"
+          >
+            <span className="icon">🔒</span>
+            <span>تغيير كلمة السر</span>
           </button>
         </div>
       </div>
@@ -289,7 +357,7 @@ export default function DashboardWorks() {
           </div>
         ))}
 
-        {!loading && works.length === 0 && <div className="empty">ما في أعمال لعرضها.</div>}
+        {!loading && works.length === 0 && <div className="empty">لا يوجد أعمال لعرضها.</div>}
       </div>
 
       {isOpen && (
@@ -335,7 +403,7 @@ export default function DashboardWorks() {
                     <img src={form.fileData || form.url} alt="preview" />
                   )
                 ) : (
-                  <span>ما في معاينة بعد</span>
+                  <span>  لا يوجد معاينة</span>
                 )}
               </div>
 
@@ -351,6 +419,36 @@ export default function DashboardWorks() {
               <div className="form-actions">
                 <button type="button" onClick={() => { setIsOpen(false); }} className="btn btn-secondary">إلغاء</button>
                 <button type="submit" className="btn btn-primary" disabled={uploading}>إضافة العمل</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* مودال تغيير كلمة السر */}
+      {isChangePwdOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>تغيير كلمة السر</h3>
+              <button onClick={() => { setIsChangePwdOpen(false); }} className="close">✕</button>
+            </div>
+
+            <form onSubmit={submitChangePassword} className="form">
+              <label>كلمة السر الحالية</label>
+              <input type="password" value={pwdForm.current} onChange={(e) => setPwdForm((s) => ({ ...s, current: e.target.value }))} />
+
+              <label>كلمة السر الجديدة</label>
+              <input type="password" value={pwdForm.newPwd} onChange={(e) => setPwdForm((s) => ({ ...s, newPwd: e.target.value }))} />
+
+              <label>تأكيد كلمة السر الجديدة</label>
+              <input type="password" value={pwdForm.confirm} onChange={(e) => setPwdForm((s) => ({ ...s, confirm: e.target.value }))} />
+
+              {changeError && <div className="error">{changeError}</div>}
+
+              <div className="form-actions">
+                <button type="button" onClick={() => setIsChangePwdOpen(false)} className="btn btn-secondary">إلغاء</button>
+                <button type="submit" className="btn btn-primary" disabled={changeLoading}>{changeLoading ? 'جاري التغيير...' : 'تغيير كلمة السر'}</button>
               </div>
             </form>
           </div>

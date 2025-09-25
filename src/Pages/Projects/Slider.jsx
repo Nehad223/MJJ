@@ -60,7 +60,7 @@ const Slider = () => {
     >
       {slides.map(item => {
         const displayImg = item.image_url || thumbnails[item.id]
-        if (!displayImg) return null // إذا ما في صورة ولا لقطة → نتجاهل الكارد
+        if (!displayImg) return null // إذا لا يوجد صورة ولا لقطة → نتجاهل الكارد
 
         return (
           <SwiperSlide key={item.id} >
