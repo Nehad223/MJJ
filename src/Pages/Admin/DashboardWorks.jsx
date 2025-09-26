@@ -219,57 +219,91 @@ export default function DashboardWorks() {
 
   // رفع العمل مع Authorization
   function submitCreate() {
-    const fd = new FormData();
-    fd.append("name", form.title);
-    fd.append("content", form.description);
-    fd.append("date", form.date || new Date().toISOString().slice(0, 10));
-    if (form.imageFile) fd.append("image", form.imageFile);
-    if (form.videoFile) fd.append("video", form.videoFile);
-    if (!form.imageFile && !form.videoFile && form.url) {
-      fd.append("url", form.url);
-    }
+  const fd = new FormData();
+  fd.append("name", form.title);
+  fd.append("content", form.description);
+  fd.append("date", form.date || new Date().toISOString().slice(0, 10));
+  if (form.imageFile) fd.append("image", form.imageFile);
+  if (form.videoFile) fd.append("video", form.videoFile);
+  if (!form.imageFile && !form.videoFile && form.url) {
+    fd.append("url", form.url);
+  }
 
-    setUploading(true);
+  // token from sessionStorage
+  const token = sessionStorage.getItem("token") || "";
+  console.log("submitCreate: token length:", token ? token.length : 0);
+  console.log("submitCreate: token preview:", token ? token.slice(0, 40) + "..." : "<no-token>");
+
+  if (!token) {
+    toast.error("غير مسموح, سجّل الدخول.", { autoClose: 3500 });
+    return;
+  }
+  fd.append("token", token);
+
+  setUploading(true);
+  setProgress(0);
+
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", endpointAdd);
+
+
+  xhr.upload.onprogress = function (event) {
+    if (event.lengthComputable) {
+      const p = Math.round((event.loaded / event.total) * 100);
+      setProgress(p);
+    }
+  };
+
+  xhr.onload = async function () {
+    setUploading(false);
     setProgress(0);
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", endpointAdd);
-    const token = sessionStorage.getItem("token") || "";
-    if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    const respText = xhr.responseText || "";
+    let parsed = null;
+    try { parsed = respText ? JSON.parse(respText) : null; } catch (e) { parsed = null; }
 
-    xhr.upload.onprogress = function (event) {
-      if (event.lengthComputable) {
-        const p = Math.round((event.loaded / event.total) * 100);
-        setProgress(p);
+    console.log("submitCreate: upload response:", { status: xhr.status, text: respText, parsed });
+
+    if (xhr.status >= 200 && xhr.status < 300) {
+      try {
+        await fetchWorks();
+        setIsOpen(false);
+        cleanupFormAndInputs();
+        toast.success("تم اضافة العمل بنجاح", { autoClose: 3000 });
+      } catch (err) {
+        console.warn("fetch after add failed", err);
+        toast.warn("تم اضافة العمل (جزئياً) — حدث خطأ عند تحديث القائمة.", { autoClose: 3500 });
       }
-    };
+      return;
+    }
 
-    xhr.onload = async function () {
-      setUploading(false);
-      setProgress(0);
-      if (xhr.status >= 200 && xhr.status < 300) {
-        try {
-          await fetchWorks();
-          setIsOpen(false);
-          cleanupFormAndInputs();
-          toast.success("تم اضافة العمل بنجاح", { autoClose: 3000 });
-        } catch (err) {
-          console.warn("fetch after add failed", err);
-          toast.warn("تم اضافة العمل (جزئياً) — حدث خطأ عند تحديث القائمة.", { autoClose: 3500 });
-        }
-      } else {
-        toast.error(`خطأ من السيرفر: ${xhr.status} ${xhr.statusText}\n${xhr.responseText || ""}`, { autoClose: 5000 });
-      }
-    };
+    const serverMsg = (parsed && (parsed.detail || parsed.message || parsed.error)) || respText || `${xhr.status} ${xhr.statusText}`;
 
-    xhr.onerror = function () {
-      setUploading(false);
-      setProgress(0);
-      toast.error("حدثت مشكلة خلال الاتصال بالسيرفر.  الـ CORS أو الشبكة.", { autoClose: 5000 });
-    };
+    if (xhr.status === 401 || (serverMsg && serverMsg.toString().toLowerCase().includes("token"))) {
+      toast.error("خطأ توكن عند الرفع: " + serverMsg, { autoClose: 7000 });
+      console.error("UPLOAD TOKEN INVALID -> backend expects token in request body under field 'token' or token expired.");
+    } else {
+      toast.error("خطأ من السيرفر: " + serverMsg, { autoClose: 7000 });
+    }
 
-    xhr.send(fd);
-  }
+    console.log({
+      debug_token_prefix: token ? token.slice(0, 12) + "..." : "<no-token>",
+      endpoint: endpointAdd,
+      request_was_formdata: true,
+      response_text: respText,
+      parsed_response: parsed,
+    });
+  };
+
+  xhr.onerror = function (e) {
+    setUploading(false);
+    setProgress(0);
+    toast.error("مشكلة بالاتصال أثناء الرفع. شيك الكونسول.", { autoClose: 5000 });
+    console.error("xhr.onerror:", e);
+  };
+
+  xhr.send(fd);
+}
 
   function cleanupFormAndInputs() {
     if (form._tempObjectUrl) {
