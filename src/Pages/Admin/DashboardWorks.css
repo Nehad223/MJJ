@@ -34,13 +34,14 @@
   background: #0059c8;
 }
 
-/* Grid */
+/* Grid الأعمال */
 .works-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 }
 
+/* كرت العمل */
 .work-card {
   background: #fff;
   border-radius: 12px;
@@ -48,42 +49,69 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  height: 420px; /* ارتفاع ثابت لكل الكرتات */
+  transition: transform 0.2s;
+}
+
+.work-card:hover {
+  transform: translateY(-4px);
+}
+
+/* الميديا */
+.media {
+  flex: 0 0 200px;
+  overflow: hidden;
+  background: #000; /* لو الصورة/الفيديو ما حمل */
 }
 
 .media img,
 .media video {
   width: 100%;
-  max-height: 200px;
+  height: 100%;
   object-fit: cover;
 }
 
+/* معلومات العمل */
 .info {
   padding: 15px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  flex: 1;
 }
 
 .info h2 {
   font-size: 18px;
-  margin: 0;
+  margin: 0 0 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .info .date {
   font-size: 13px;
   color: #666;
-  margin-top: 4px;
+  margin-top: 0;
 }
 
-.info p {
-  margin-top: 10px;
+.info p.desc {
+  flex: 1;
+  margin-top: 5px;
+  font-size: 14px;
   color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* 3 أسطر */
+  -webkit-box-orient: vertical;
 }
 
+/* أزرار الحذف والتعديل */
 .actions {
-  margin-top: 15px;
+  margin-top: 10px;
   display: flex;
   gap: 8px;
+  justify-content: flex-end;
 }
 
 .btn-edit {
@@ -204,18 +232,34 @@
 }
 
 /* Responsive tweaks */
-@media (max-width: 600px) {
-  .dashboard-header {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
-  }
-
+@media (max-width: 768px) {
   .work-card {
-    flex-direction: column;
+    height: 400px;
   }
-
+  .media {
+    flex: 0 0 180px;
+  }
   .info h2 {
     font-size: 16px;
+  }
+  .info p.desc {
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .work-card {
+    height: 380px;
+  }
+  .media {
+    flex: 0 0 150px;
+  }
+  .info h2 {
+    font-size: 15px;
+  }
+  .info p.desc {
+    font-size: 12px;
+    -webkit-line-clamp: 2;
   }
 }

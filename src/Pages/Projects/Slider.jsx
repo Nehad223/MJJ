@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 
 const Slider = () => {
   const [slides, setSlides] = useState([])
-  const [thumbnails, setThumbnails] = useState({}) // لتخزين اللقطات من الفيديوهات
+  const [thumbnails, setThumbnails] = useState({}) 
 
   useEffect(() => {
     fetch('https://mohammed229.pythonanywhere.com/main/services/')
@@ -60,7 +60,7 @@ const Slider = () => {
     >
       {slides.map(item => {
         const displayImg = item.image_url || thumbnails[item.id]
-        if (!displayImg) return null // إذا لا يوجد صورة ولا لقطة → نتجاهل الكارد
+        if (!displayImg) return null 
 
         return (
           <SwiperSlide key={item.id} >

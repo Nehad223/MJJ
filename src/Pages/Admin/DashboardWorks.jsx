@@ -453,16 +453,55 @@ export default function DashboardWorks() {
       <div className="works-grid">
         {works.map((w) => (
           <div key={w.id} className="work-card">
-            <div className="media">
-              {w.type === "video" ? (
-                <video controls>
-                  <source src={w.url || w.fileData} />
-                  متصفحك لا يدعم الفيديو
-                </video>
-              ) : (
-                <img src={w.url || w.fileData} alt={w.title} />
-              )}
-            </div>
+<div className="media">
+  {(() => {
+    // حاول نلاقي أي حقل ممكن يحتوي على رابط الميديا
+    const candidate =
+      w.url ||
+      w.video_url ||
+      w.image_url ||
+      (w.raw && (w.raw.video_url || w.raw.video || w.raw.file || w.raw.image_url));
+
+    if (!candidate) {
+      console.log("No media src for work", w.id, w.raw);
+      return <div className="no-media">لا يوجد وسائط مع هذا العمل</div>;
+    }
+
+    const src = typeof candidate === "object" ? (candidate.url || JSON.stringify(candidate)) : candidate;
+    const looksLikeVideo = /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(src) || w.type === "video";
+
+    if (looksLikeVideo) {
+      console.log("Rendering video for", w.id, src);
+      return (
+        <video
+          controls
+          preload="metadata"
+          playsInline
+          src={src}
+          // جرّب تفعيل crossorigin لو الفيديو من دومين ثاني وعندك CORS مضبوط
+          // crossOrigin="anonymous"
+          onError={(e) => {
+            console.error("video load error", { id: w.id, src, err: e });
+          }}
+        >
+          متصفحك لا يدعم الفيديو
+        </video>
+      );
+    }
+
+    return (
+      <img
+        src={src}
+        alt={w.title || "work image"}
+        onError={(e) => {
+          console.error("image load error", { id: w.id, src, err: e });
+          e.currentTarget.src = ""; // ممكن تحط صورة افتراضية هنا
+        }}
+      />
+    );
+  })()}
+</div>
+
 
             <div className="info">
               <h2 className="work-title">{w.title}</h2>
@@ -574,3 +613,4 @@ export default function DashboardWorks() {
     </div>
   );
 }
+
