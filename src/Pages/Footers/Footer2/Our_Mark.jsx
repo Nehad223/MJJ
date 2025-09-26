@@ -4,7 +4,7 @@ const Our_Mark = () => {
     <div className='Our_Mark'>
         <h1>لمزيد من التطبيقات و المواقع يمكنك مراسلتنا من خلال:
              </h1>
-             <p>          NehadShretah@gmail.com </p>
+             <p>          Novatech295@gmail.com </p>
                <p>    0940219610</p>
       
     </div>

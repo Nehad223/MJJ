@@ -1,6 +1,6 @@
 // Img_Main.jsx
 import React, { useEffect } from 'react';
-import photo from '../../assets/Main.png'; // Vite يرجعلك الرابط النهائي مع hash
+import photo from '../../assets/Main.png'; 
 
 const Img_Main = () => {
 

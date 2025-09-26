@@ -12,3 +12,28 @@ body{
 html, body {
   overflow-x: hidden;
 }
+
+ #splash-screen {
+        position: fixed;
+        inset: 0;
+        background: var(--main-color); /* لون الخلفية */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border: 6px solid rgba(255, 255, 255, 0.25);
+        border-top: 6px solid #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
