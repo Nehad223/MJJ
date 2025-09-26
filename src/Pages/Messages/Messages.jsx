@@ -203,36 +203,37 @@ export default function Messages() {
             <div className="empty">لا يوجد رسائل حالياً.</div>
           )}
 
-          <ul className="messages-list">
-            {filtered.map((m, idx) => {
-              const id = m.id ?? idx;
-              const isDeleting = deletingIds.has(String(id));
-              return (
-                <li key={id} className="message-item">
-                  <div className="meta">
-                    <div className="left-meta">
-                      <strong className="name">{m.user_name || "مجهول"}</strong>
-                      <span className="email">{m.user_email || "—"}</span>
-                    </div>
+         <ul className="messages-list">
+  {[...filtered].reverse().map((m, idx) => {
+    const id = m.id ?? idx;
+    const isDeleting = deletingIds.has(String(id));
+    return (
+      <li key={id} className="message-item">
+        <div className="meta">
+          <div className="left-meta">
+            <strong className="name">{m.user_name || "مجهول"}</strong>
+            <span className="email">{m.user_email || "—"}</span>
+          </div>
 
-                    <div className="right-meta">
-                      {m.created && <span className="date">{m.created}</span>}
-                      <button
-                        className="delete-btn"
-                        onClick={() => handleDelete(id)}
-                        disabled={isDeleting}
-                        title="حذف الرسالة"
-                      >
-                        {isDeleting ? "جارٍ الحذف..." : "حذف"}
-                      </button>
-                    </div>
-                  </div>
+          <div className="right-meta">
+            {m.created && <span className="date">{m.created}</span>}
+            <button
+              className="delete-btn"
+              onClick={() => handleDelete(id)}
+              disabled={isDeleting}
+              title="حذف الرسالة"
+            >
+              {isDeleting ? "جارٍ الحذف..." : "حذف"}
+            </button>
+          </div>
+        </div>
 
-                  <div className="body">{m.message ?? (m.text || "")}</div>
-                </li>
-              );
-            })}
-          </ul>
+        <div className="body">{m.message ?? (m.text || "")}</div>
+      </li>
+    );
+  })}
+</ul>
+
         </div>
       </main>
     </div>

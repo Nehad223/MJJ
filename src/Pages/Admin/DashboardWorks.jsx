@@ -37,7 +37,11 @@ export default function DashboardWorks() {
   const endpointAdd = "https://render-project1-qyk2.onrender.com/exercises/add-service-with-video/"; 
   const endpointDeleteBase = "https://mohammed229.pythonanywhere.com/main/delete_service/"; 
   const endpointChangePassword = "https://mohammed229.pythonanywhere.com/main/change-password/";
-
+ const formatDate = (isoDate) => {
+    if (!isoDate) return "";
+    const d = new Date(isoDate);
+    return new Intl.DateTimeFormat('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+  };
   function confirmToast(message, onConfirm) {
     const id = toast.info(
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -505,7 +509,7 @@ export default function DashboardWorks() {
 
             <div className="info">
               <h2 className="work-title">{w.title}</h2>
-              <p className="date">{w.date}</p>
+              <p className="date">{formatDate(w.date)}</p>
               <p className="desc">{w.description}</p>
               <div className="actions">
                 <button onClick={() => handleDelete(w.id)} className="btn btn-danger">حذف</button>
