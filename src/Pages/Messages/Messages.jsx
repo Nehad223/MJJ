@@ -1,4 +1,3 @@
-// Messages.jsx
 import React, { useEffect, useState } from "react";
 import "./Messages.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -14,9 +13,23 @@ export default function Messages() {
   const fetchMessages = async () => {
     setLoading(true);
     setFetchError("");
+
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      toast.error("غير مسموح. سجل الدخول أولاً.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch(
-        "https://mohammed229.pythonanywhere.com/main/messages/"
+        "https://mohammed229.pythonanywhere.com/main/messages/",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        }
       );
 
       let data;
@@ -41,7 +54,7 @@ export default function Messages() {
     } catch (err) {
       console.error("fetch messages error:", err);
       setFetchError("تعذر جلب الرسائل. تفقد السيرفر أو اتصال الشبكة.");
-      toast.error("تعذر جلب الرسائل. شيك الكونسول", { autoClose: 3500 });
+      toast.error("تعذر جلب الرسائل.  ", { autoClose: 3500 });
     } finally {
       setLoading(false);
     }
@@ -107,19 +120,33 @@ export default function Messages() {
   };
 
   const doDelete = async (id) => {
-    // إضافة حالة حذف
     setDeletingIds((s) => {
       const next = new Set(s);
       next.add(String(id));
       return next;
     });
 
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      toast.error("غير مسموح. سجل الدخول أولاً.");
+      setDeletingIds((s) => {
+        const next = new Set(s);
+        next.delete(String(id));
+        return next;
+      });
+      return;
+    }
+
     try {
       const url = `https://mohammed229.pythonanywhere.com/main/delete_message/${id}/`;
-      const res = await fetch(url, { method: "DELETE" });
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`, 
+        },
+      });
 
       if (!res.ok) {
-        // حاول قراءة نص الخطأ لو موجود
         let text = "";
         try {
           text = await res.text();
@@ -127,14 +154,12 @@ export default function Messages() {
         throw new Error(`فشل الحذف: ${res.status} ${res.statusText} ${text}`);
       }
 
-      // إزالة الرسالة من الواجهة (optimistic)
       setMessages((prev) => prev.filter((m) => String(m.id) !== String(id)));
       toast.success("تم حذف الرسالة", { autoClose: 3000 });
     } catch (err) {
       console.error("delete message error:", err);
-      toast.error("صارت مشكلة أثناء الحذف. شيك الكونسول.", { autoClose: 4500 });
+      toast.error("حدثت مشكلة أثناء الحذف", { autoClose: 4500 });
     } finally {
-      // إزالة حالة الحذف
       setDeletingIds((s) => {
         const next = new Set(s);
         next.delete(String(id));
@@ -145,8 +170,6 @@ export default function Messages() {
 
   return (
     <div className="messages-page">
-      {/* لو ماني ضفت ToastContainer بمكان ثاني، خلي هالمكون هنا.
-          تأكد ما يكون أكثر من ToastContainer واحد بالـ app */}
       <ToastContainer
         position="top-right"
         autoClose={3000}

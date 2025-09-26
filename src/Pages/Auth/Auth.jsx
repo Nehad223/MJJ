@@ -31,20 +31,14 @@ export default function Auth() {
 
       setLoading(false);
 
-      if (res.ok && data.success) {
-        // نحفظ حالة الجلسة في sessionStorage (تختفي لما يغلّق التبويب/المتصفح)
-        sessionStorage.setItem("isAuth", "true");
-        // نخزن الإيميل اللي بيرجع من السيرفر أو اللي دخله المستخدم
-        if (data.email) sessionStorage.setItem("adminEmail", data.email);
-        else sessionStorage.setItem("adminEmail", email);
-
-        // لو الـ API رجع توكن تحفظه (اختياري) - مثال:
-        // if (data.token) sessionStorage.setItem("token", data.token);
-
-        // توجيه للداشبورد
-        window.location.href = "/admin";
-        return;
-      }
+if (res.ok && data.success) {
+ 
+  sessionStorage.setItem("isAuth", "true");
+  sessionStorage.setItem("adminEmail", data.email || email);
+  if (data.access) sessionStorage.setItem("token", data.access);
+  window.location.href = "/admin";
+  return;
+}
 
       if (res.status === 401) {
         setError("كلمة السر خاطئة!");

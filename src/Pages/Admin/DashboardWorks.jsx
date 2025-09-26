@@ -38,7 +38,6 @@ export default function DashboardWorks() {
   const endpointDeleteBase = "https://mohammed229.pythonanywhere.com/main/delete_service/"; 
   const endpointChangePassword = "https://mohammed229.pythonanywhere.com/main/change-password/";
 
-  // helper: non-blocking confirm using toast with buttons
   function confirmToast(message, onConfirm) {
     const id = toast.info(
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -79,11 +78,16 @@ export default function DashboardWorks() {
     );
   }
 
+
   async function fetchWorks() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(endpointList, { method: "GET" });
+      const token = sessionStorage.getItem("token") || "";
+      const res = await fetch(endpointList, { 
+        method: "GET",
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
       if (!res.ok) {
         const txt = await res.text().catch(() => "");
         throw new Error(`HTTP ${res.status} ${res.statusText} ${txt ? "- "+txt : ""}`);
@@ -115,7 +119,6 @@ export default function DashboardWorks() {
 
   useEffect(() => {
     fetchWorks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -124,7 +127,6 @@ export default function DashboardWorks() {
         try { URL.revokeObjectURL(form._tempObjectUrl); } catch (e) {}
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function openAdd() {
@@ -145,17 +147,14 @@ export default function DashboardWorks() {
     setIsOpen(true);
   }
 
+  // الحذف مع Authorization
   async function doDelete(id) {
     try {
-      let url;
-      if (endpointDeleteBase.endsWith("/")) {
-        url = `${endpointDeleteBase}${id}/`;
-      } else {
-        url = `${endpointDeleteBase}/${id}/`;
-      }
-
+      const token = sessionStorage.getItem("token") || "";
+      let url = endpointDeleteBase.endsWith("/") ? `${endpointDeleteBase}${id}/` : `${endpointDeleteBase}/${id}/`;
       const res = await fetch(url, {
         method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
 
       if (res.status === 204) {
@@ -171,9 +170,7 @@ export default function DashboardWorks() {
         if (typeof j.success !== "undefined") ok = !!j.success;
       } catch (e) {}
 
-      if (!ok) {
-        throw new Error(`HTTP ${res.status} ${res.statusText} ${text ? "- " + text : ""}`);
-      }
+      if (!ok) throw new Error(`HTTP ${res.status} ${res.statusText} ${text ? "- " + text : ""}`);
 
       await fetchWorks();
       toast.success("تم الحذف بنجاح", { autoClose: 3000 });
@@ -184,7 +181,6 @@ export default function DashboardWorks() {
   }
 
   function handleDelete(id) {
-    // عرض confirm غير محبوس (toast مع أزرار)
     confirmToast("هل انت متاكد من حذف العمل؟ ", () => doDelete(id));
   }
 
@@ -221,6 +217,7 @@ export default function DashboardWorks() {
     submitCreate();
   }
 
+  // رفع العمل مع Authorization
   function submitCreate() {
     const fd = new FormData();
     fd.append("name", form.title);
@@ -237,6 +234,8 @@ export default function DashboardWorks() {
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", endpointAdd);
+    const token = sessionStorage.getItem("token") || "";
+    if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`);
 
     xhr.upload.onprogress = function (event) {
       if (event.lengthComputable) {
@@ -266,7 +265,7 @@ export default function DashboardWorks() {
     xhr.onerror = function () {
       setUploading(false);
       setProgress(0);
-      toast.error("صارت مشكلة خلال الاتصال بالسيرفر. شيك الـ CORS أو الشبكة.", { autoClose: 5000 });
+      toast.error("حدثت مشكلة خلال الاتصال بالسيرفر.  الـ CORS أو الشبكة.", { autoClose: 5000 });
     };
 
     xhr.send(fd);
@@ -293,7 +292,7 @@ export default function DashboardWorks() {
     if (videoInputRef.current) videoInputRef.current.value = "";
   }
 
-  // --- وظائف تغيير كلمة السر ---
+  // --- وظائف تغيير كلمة السر مع Authorization ---
   function openChangePwd() {
     setPwdForm({ current: "", newPwd: "", confirm: "" });
     setChangeError(null);
@@ -307,13 +306,13 @@ export default function DashboardWorks() {
     if (!pwdForm.current.trim() || !pwdForm.newPwd.trim() || !pwdForm.confirm.trim()) {
       return setChangeError("مطلوب تعبئة كل الحقول");
     }
-    if (pwdForm.newPwd !== pwdForm.confirm) return setChangeError("كلمتا المرور الجديدتين مش متطابقتين");
+    if (pwdForm.newPwd !== pwdForm.confirm) return setChangeError("كلمتا المرور الجديدتين غير متطابقتين");
     if (pwdForm.newPwd.length < 6) return setChangeError("كلمة المرور يجب ان تكون 6 أحرف على الأقل");
 
     setChangeLoading(true);
     try {
-      // الحصول على الإيميل من sessionStorage (جلسة)
       const email = sessionStorage.getItem("adminEmail") || "";
+      const token = sessionStorage.getItem("token") || "";
 
       const payload = {
         email,
@@ -326,6 +325,7 @@ export default function DashboardWorks() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify(payload),
       });
@@ -368,7 +368,6 @@ export default function DashboardWorks() {
 
   return (
     <div className="dashboard-container">
-      {/* ToastContainer لازم يكون موجود مرة وحدة بالمشروع */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
