@@ -50,8 +50,8 @@
 }
 
 .Icon img {
-  width: 50%;
-  height: 50%;
+  width: 3vh;
+  height: 3vh;
   object-fit: contain;
 }
 
