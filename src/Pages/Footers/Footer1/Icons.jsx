@@ -4,7 +4,8 @@ import youtube from '../../../assets/youtube_icon.png';
 import threads from '../../../assets/threads_icon.png';
 import instgram from '../../../assets/instagram_icon.png';
 import Icon from './Icon';
-import tiktok from '../../../assets/tiktok_icon.png'
+import tiktok from '../../../assets/tiktok_icon.png';
+import whatsapp from '../../../assets/whatsapp_icon.png'
 
 
 
@@ -16,6 +17,7 @@ const Icons = () => {
         <Icon img={threads} link={"https://www.threads.com/@dr.jaddoa"}/>
         <Icon img={youtube} link={"https://youtube.com/@mojadoa?si=L5a3cnkqP485BZRz"}/>
         <Icon img={tiktok} link={"https://www.tiktok.com/@mo_jadoa"}/>
+        <Icon img={whatsapp} link={'https://wa.me/963940389427'} />
     </div>
   )
 }

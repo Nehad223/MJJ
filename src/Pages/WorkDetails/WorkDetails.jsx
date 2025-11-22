@@ -29,55 +29,87 @@ export default function WorkDetails() {
     return (
       <div className="wd-container">
         <p>لا يوجد بيانات لعرضها — افتح تفاصيل العمل عن طريق السلايدر.</p>
-        <p>أو <Link to="/">ارجع للسلايدر</Link> وحاول مرة تانية.</p>
+        <p>
+          أو <Link to="/">ارجع للسلايدر</Link> وحاول مرة تانية.
+        </p>
       </div>
     );
   }
 
   const { image_url, video_url, company, name, date, content, title } = workFromState;
 
-  // دالة لتنسيق التاريخ بالعربي
   const formatDate = (isoDate) => {
     if (!isoDate) return "";
     const d = new Date(isoDate);
-    return new Intl.DateTimeFormat('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+    return new Intl.DateTimeFormat("ar-EG", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(d);
   };
 
-  // تحديد عنصر الوسائط للعرض
-  const mediaElement = image_url
-    ? <img className="wd-image" src={image_url} alt={title || name} />
-    : video_url
-    ? <video className="wd-image" src={video_url} controls />
-    : null;
+  const mediaElement = image_url ? (
+    <img className="wd-image" src={image_url} alt={title || name} />
+  ) : video_url ? (
+    <video className="wd-image" src={video_url} controls />
+  ) : null;
 
   return (
-    <div className="wd-container mt-5 container">
+    <>
+      {/* Navbar */}
+      <nav className="navbar navbar-expand-lg bg-body-tertiary" dir="rtl">
+        <div className="container-fluid d-flex justify-content-between align-items-center">
 
-      {isDesktop ? (
-        <div className="wd-grid-desktop">
-          <div className="wd-image-wrap mt-5">
-            {mediaElement || <div className="wd-image-placeholder">لا يوجد صورة ولا فيديو</div>}
-          </div>
-          <div className="wd-text container">
-            <div className="wd-company">{company}</div>
-            <h1 className="wd-title">{title || name}</h1>
-            <div className="wd-date">{formatDate(date)}</div>
-            <div className="wd-content"><p>{content}</p></div>
-          </div>
+          {/* الشعار على اليمين */}
+          <a
+            className="navbar-brand mx-lg-5"
+            href="#"
+            onClick={(e) => e.preventDefault()}
+            style={{ fontWeight: "700", fontSize: "1.5rem" }}
+          >
+            MJ+
+          </a>
+
+          {/* زر الرجوع على اليسار */}
+   <Link to={-1} className="btn-back me-lg-3">
+  <span className="arrow">←</span>
+  <span className="text">رجوع</span>
+</Link>
         </div>
-      ) : (
-        <div className="wd-mobile">
-          <div className="wd-header">
-            <div className="wd-company">{company}</div>
-            <h1 className="wd-title">{title || name}</h1>
-            <div className="wd-date">{formatDate(date)}</div>
+      </nav>
+
+      {/* محتوى الصفحة */}
+      <div className="wd-container mt-5 container">
+        {isDesktop ? (
+          <div className="wd-grid-desktop">
+            <div className="wd-image-wrap mt-5">
+              {mediaElement || <div className="wd-image-placeholder">لا يوجد صورة ولا فيديو</div>}
+            </div>
+            <div className="wd-text container mt-5 text-end">
+              <div className="wd-company mt-3">{company}</div>
+              <h1 className="wd-title">{title || name}</h1>
+              <div className="wd-date">{formatDate(date)}</div>
+              <div className="wd-content">
+                <p>{content}</p>
+              </div>
+            </div>
           </div>
-          <div className="wd-image-wrap">
-            {mediaElement || <div className="wd-image-placeholder">لا يوجد صورة ولا فيديو</div>}
+        ) : (
+          <div className="wd-mobile text-end">
+            <div className="wd-header">
+              <div className="wd-company">{company}</div>
+              <h1 className="wd-title">{title || name}</h1>
+              <div className="wd-date">{formatDate(date)}</div>
+            </div>
+            <div className="wd-image-wrap">
+              {mediaElement || <div className="wd-image-placeholder">لا يوجد صورة ولا فيديو</div>}
+            </div>
+            <div className="wd-content">
+              <p>{content}</p>
+            </div>
           </div>
-          <div className="wd-content"><p>{content}</p></div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }

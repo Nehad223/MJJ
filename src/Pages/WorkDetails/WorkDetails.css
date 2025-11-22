@@ -1,13 +1,13 @@
 
 .wd-image-wrap {
-  width: 95%;        /* أقل من 100% عشان ما يكون عرض كبير */
-  max-width: 450px;  /* اختياري */
+  width: 95%;       
+  max-width: 450px; 
   margin: 0 auto 1rem auto;
 }
 .wd-image {
   margin-top: 20px;
   width: 100%;
-  height: 40vh;      /* كبرنا الطول */
+  height: 40vh;   
   object-fit: cover;
   border-radius: 10px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.45);
@@ -22,17 +22,19 @@
   justify-content: center;
   color: var(--muted);
 }
-.wd-mobile .wd-title{
-    font-size: clamp(12px, 6vw, 30px);
+.wd-mobile , .wd-title {
+  font-size: clamp(12px, 6vw, 42px) !important;
   font-weight: 700;
-
-
+  text-align: right;
+  white-space: nowrap;
+  overflow: visible;
 }
-/* نصوص الموبايل في الوسط */
+
 .wd-mobile .wd-company,
 .wd-mobile .wd-title,
 .wd-mobile .wd-date,
 .wd-mobile .wd-content p {
+  
   margin-left: auto;
   margin-right: auto;
   margin-top: 20px;
@@ -97,8 +99,7 @@
   font-weight: 400;
     text-align: justify;
   text-justify: inter-word;
-  hyphens: auto; /* لتقسيم الكلمات الطويلة إذا احتاج */
-
+  hyphens: auto; 
   }
   .wd-title{
   font-size: clamp(30px, 5vw, 50px);
@@ -108,5 +109,73 @@
   font-weight: 550;
 
 
+  }
+}
+/* === زر الرجوع العام === */
+.btn-back {
+  border: 2px solid var(--bs-primary);
+  color: var(--bs-primary);
+  background-color: transparent;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 8px 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  line-height: 1; /* منع اختلاف المحاذاة العمودية */
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+/* السهم */
+
+.btn-back .arrow {
+  font-size: 2.4em; /* 🔹 أكبر من النص بنسبة 40% */
+  line-height: 1;
+  position: relative;
+  top: -1px; /* توازن عمودي خفيف */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* النص */
+.btn-back .text {
+  line-height: 1;
+}
+
+/* عند المرور */
+.btn-back:hover {
+  background-color: var(--bs-primary);
+  color: #fff;
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+/* عند الضغط */
+.btn-back:active {
+  transform: scale(0.97);
+}
+
+/* === للشاشات الصغيرة === */
+@media (max-width: 767px) {
+  .btn-back {
+    font-size: 0.9rem;
+    padding: 6px 14px;
+    border-radius: 10px;
+    gap: 6px;
+  }
+}
+
+/* === للشاشات الكبيرة === */
+@media (min-width: 992px) {
+  .btn-back {
+    font-size: 1.1rem;
+    padding: 10px 24px;
+    border-radius: 14px;
   }
 }
