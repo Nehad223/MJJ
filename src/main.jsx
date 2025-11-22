@@ -11,14 +11,22 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </React.StrictMode>,
 )
+
+// دالة إزالة صفحة التحميل
 function removeSplash() {
   const splash = document.getElementById('splash-screen')
   if (!splash) return
-  splash.style.opacity = '0'
 
+  splash.style.opacity = '0'
   setTimeout(() => {
-    if (splash && splash.parentNode) splash.parentNode.removeChild(splash)
+    if (splash && splash.parentNode)
+      splash.parentNode.removeChild(splash)
   }, 500)
 }
-window.addEventListener('load', removeSplash)
-setTimeout(removeSplash, 5000)
+
+// نجعلها متاحة في كل المشروع
+window.removeSplash = removeSplash
+
+// ❌ يتم إزالة السبلّاش فقط عند انتهاء تحميل المشاريع
+// window.addEventListener('load', removeSplash)
+// setTimeout(removeSplash, 5000)

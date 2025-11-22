@@ -17,7 +17,7 @@ const Img_Main = () => {
   }, []);
 
   return (
-    <div className="Img_Main px-5">
+    <div className="Img_Main">
       <img src={photo} alt="خدمات رقمية" />
     </div>
   );

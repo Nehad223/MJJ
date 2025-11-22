@@ -38,14 +38,14 @@
   font-family: "Tajawal", sans-serif;
   font-weight: 700;
   color: white;
-  font-size: clamp(18px, 5vw, 50px);
+  font-size: clamp(18px, 5vw, 45px);
   margin-top: 2rem;
 }
 .Text_Main p {
   font-family: "Tajawal", sans-serif;
   font-weight: 400;
   color: white;
-  font-size: clamp(12px, 3vw, 30px);
+  font-size: clamp(12px, 3vw, 28px);
   margin-top: 1rem;
   line-height: 1.4;
 }
@@ -65,8 +65,11 @@
   line-height: 70px;
   font-size: clamp(14px, 2vw, 30px);
 }
+.Img_Main img{
+  width:  120% !important;
+}
 
-@media (max-width: 600px) {
+@media (max-width: 990px) {
 
 
   .container .row {

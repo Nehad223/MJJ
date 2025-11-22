@@ -2,38 +2,38 @@ body{
   margin: 0px;
   padding: 0px;
   background-color: #0071F8 !important;
-    overflow-x: hidden;
-
+  overflow-x: hidden;
 }
 
 :root {
   --main-color: #0071F8; 
 }
+
 html, body {
   overflow-x: hidden;
 }
 
- #splash-screen {
-        position: fixed;
-        inset: 0;
-        background: var(--main-color); /* لون الخلفية */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        transition: opacity 0.5s ease;
-      }
+#splash-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--main-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease;
+}
 
-      .spinner {
-        width: 60px;
-        height: 60px;
-        border: 6px solid rgba(255, 255, 255, 0.25);
-        border-top: 6px solid #fff;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(255, 255, 255, 0.25);
+  border-top: 6px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
 
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

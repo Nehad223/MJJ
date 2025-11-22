@@ -1,4 +1,3 @@
-// Slider.jsx
 import { useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
@@ -9,8 +8,10 @@ import { Link } from 'react-router-dom'
 
 const Slider = () => {
   const [slides, setSlides] = useState([])
-  const [thumbnails, setThumbnails] = useState({}) 
+  const [thumbnails, setThumbnails] = useState({})
+  const [loading, setLoading] = useState(true)
 
+  // جلب البيانات
   useEffect(() => {
     fetch('https://mohammed229.pythonanywhere.com/main/services/')
       .then(res => res.json())
@@ -18,12 +19,12 @@ const Slider = () => {
       .catch(err => console.error(err))
   }, [])
 
-  // دالة للحصول على لقطة من الفيديو
+  // إنشاء صورة من الفيديو
   const getVideoThumbnail = (videoUrl, time = 1) => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const video = document.createElement('video')
       video.src = videoUrl
-      video.crossOrigin = 'anonymous' // لو الفيديو من سيرفر ثاني
+      video.crossOrigin = 'anonymous'
       video.currentTime = time
 
       video.addEventListener('loadeddata', () => {
@@ -32,13 +33,12 @@ const Slider = () => {
         canvas.height = video.videoHeight
         const ctx = canvas.getContext('2d')
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-        const imgData = canvas.toDataURL('image/jpeg')
-        resolve(imgData)
+        resolve(canvas.toDataURL('image/jpeg'))
       })
     })
   }
 
-  // نجمع لقطات الفيديوهات عند تحميل البيانات
+  // توليد thumbnails للفيديوهات
   useEffect(() => {
     slides.forEach(item => {
       if (!item.image_url && item.video_url) {
@@ -48,6 +48,45 @@ const Slider = () => {
       }
     })
   }, [slides])
+
+  // التأكد من جاهزية كل الصور
+  useEffect(() => {
+    if (slides.length === 0) return
+
+    let ready = true
+
+    slides.forEach(item => {
+      if (!item.image_url && item.video_url && !thumbnails[item.id]) {
+        ready = false
+      }
+    })
+
+    if (ready) {
+      setLoading(false)
+    }
+  }, [slides, thumbnails])
+
+  // إزالة splash screen فقط بعد الجاهزية
+  useEffect(() => {
+    if (!loading && window.removeSplash) {
+      window.removeSplash()
+    }
+  }, [loading])
+
+if (loading) {
+  return (
+    <div style={{
+      width: "100%",
+      height: "300px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    }}>
+      <div className="spinner"></div>
+    </div>
+  );
+}
+
 
   return (
     <Swiper
@@ -60,21 +99,22 @@ const Slider = () => {
     >
       {slides.map(item => {
         const displayImg = item.image_url || thumbnails[item.id]
-        if (!displayImg) return null 
+        if (!displayImg) return null
 
         return (
-          <SwiperSlide key={item.id} >
-            <Link to={`/work/${item.id}`} state={{ work: item }} style={{ textDecoration: 'none' }}>
+          <SwiperSlide key={item.id}>
+            <Link 
+              to={`/work/${item.id}`} 
+              state={{ work: item }} 
+              style={{ textDecoration: 'none' }}
+            >
               <Card_Slider Img={displayImg} Text={item.name} />
             </Link>
-            
           </SwiperSlide>
         )
       })}
     </Swiper>
-    
   )
 }
 
 export default Slider
-

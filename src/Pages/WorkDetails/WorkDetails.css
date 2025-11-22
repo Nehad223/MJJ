@@ -30,6 +30,9 @@
   overflow: visible;
 }
 
+.wd-title {
+  font-size: clamp(12px, 6vw, 35px) !important;
+}
 .wd-mobile .wd-company,
 .wd-mobile .wd-title,
 .wd-mobile .wd-date,
@@ -47,7 +50,7 @@
 }
 .wd-mobile .wd-content p ,.wd-mobile .wd-date
 {
-    font-size: clamp(10px, 5vw, 20px);
+    font-size: clamp(10px, 5vw, 18px);
 }
 .wd-mobile .wd-content p {
   font-weight: 400;
