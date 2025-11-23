@@ -5,7 +5,7 @@
 }
 .Text_Fotter1 h1,.Text_Fotter2 h1,.Our_Mark h1 {
   white-space: nowrap;
-  font-size: clamp(11px, 2.5vw, 25px);
+  font-size: clamp(8px, 2.5vw, 25px);
   line-height: 1.2;
   font-family: "Tajawal", sans-serif;
   color: white ;

@@ -17,7 +17,6 @@ const Icons = () => {
         <Icon img={threads} link={"https://www.threads.com/@dr.jaddoa"}/>
         <Icon img={youtube} link={"https://youtube.com/@mojadoa?si=L5a3cnkqP485BZRz"}/>
         <Icon img={tiktok} link={"https://www.tiktok.com/@mo_jadoa"}/>
-        <Icon img={whatsapp} link={'https://wa.me/963940389427'} />
     </div>
   )
 }

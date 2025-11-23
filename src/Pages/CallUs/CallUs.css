@@ -76,13 +76,27 @@ text-align: right;
   border-radius: 6px;
 }
 
-.Form_CallUs button {
+.Form_CallUs button , .Whatsapp_Btn {
   padding: 12px;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+}
+.Whatsapp_Btn {
+  background-color: #25D366;
+  transition: 0.2s ease;
+}
+
+.Whatsapp_Btn:hover {
+  background-color: #1ebe5d;
+}
+
+.Whatsapp_Btn span img{
+width: 3vh;
+height: 3vh;
+margin-right: 10px;
 }
 .Form_CallUs button:hover {
   background-color: #0056b3;
