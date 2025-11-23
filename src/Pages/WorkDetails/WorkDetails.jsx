@@ -36,7 +36,8 @@ export default function WorkDetails() {
     );
   }
 
-  const { image_url, video_url, company, name, date, content, title } = workFromState;
+  const { image_url, video_url, company, name, date, content, title } =
+    workFromState;
 
   const formatDate = (isoDate) => {
     if (!isoDate) return "";
@@ -71,10 +72,10 @@ export default function WorkDetails() {
           </a>
 
           {/* زر الرجوع على اليسار */}
-   <Link to={-1} className="btn-back me-lg-3">
-  <span className="arrow">←</span>
-  <span className="text">رجوع</span>
-</Link>
+          <Link to={-1} className="btn-back me-lg-3">
+            <span className="arrow">←</span>
+            <span className="text">رجوع</span>
+          </Link>
         </div>
       </nav>
 
@@ -83,8 +84,12 @@ export default function WorkDetails() {
         {isDesktop ? (
           <div className="wd-grid-desktop">
             <div className="wd-image-wrap mt-5">
-              {mediaElement || <div className="wd-image-placeholder">لا يوجد صورة ولا فيديو</div>}
+              {mediaElement || (
+                <div className="wd-image-placeholder">لا يوجد صورة ولا فيديو</div>
+              )}
             </div>
+
+            {/* النص عاليمين */}
             <div className="wd-text container mt-5 text-end">
               <div className="wd-company mt-3">{company}</div>
               <h1 className="wd-title">{title || name}</h1>
@@ -102,7 +107,9 @@ export default function WorkDetails() {
               <div className="wd-date">{formatDate(date)}</div>
             </div>
             <div className="wd-image-wrap">
-              {mediaElement || <div className="wd-image-placeholder">لا يوجد صورة ولا فيديو</div>}
+              {mediaElement || (
+                <div className="wd-image-placeholder">لا يوجد صورة ولا فيديو</div>
+              )}
             </div>
             <div className="wd-content">
               <p>{content}</p>

@@ -1,13 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const Card_Slider = (props) => {
+const Card_Slider = ({ Img, Text }) => {
+  const [loaded, setLoaded] = useState(false);
+
   return (
     <div className='Card_Slider'>
-      <img src={props.Img} loading="lazy" />
-      <h1>{props.Text}</h1>
+      <div className={`img-wrapper ${loaded ? "loaded" : "loading"}`}>
+        <img 
+          src={Img} 
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+        />
+      </div>
+      <h1>{Text}</h1>
     </div>
   )
 }
 
-export default Card_Slider ;
-
+export default Card_Slider;

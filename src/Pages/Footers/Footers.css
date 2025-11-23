@@ -23,11 +23,7 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
 }
 
-.Icon img {
-  width: 50%; 
-  height: 50%;
-  object-fit: contain;
-}
+
 .Icons {
   display: flex;
   flex-wrap: wrap;    
@@ -50,14 +46,27 @@
 }
 
 .Icon img {
-  width: 3vh;
-  height: 3vh;
+  width: 4vh;
+  height: 4vh;
   object-fit: contain;
 }
 
 .Icon:hover {
   transform: scale(1.1);
 }
+@media (max-width: 600px) {
+  .Icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .Icon img {
+    width: 2vh;
+    height: 2vh;
+  }
+}
+
+
 
 @media (max-width: 600px) {
   .Icon {
@@ -66,18 +75,45 @@
   }
 
   .Icon img {
-    width: 60%;
-    height: 60%;
+    width: 2vh;
+    height: 2vh;
   }
 }
-@media (max-width: 319px) {
+@media (max-width: 390px) {
+  .Icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .Icon img {
+    width: 1.8vh;
+    height: 1.8vh;
+  }
+}
+@media (max-width: 325px) {
   .Icon {
     width: 25px;
     height: 25px;
   }
     .Icon img {
-    width: 40%;
-    height: 40%;
+    width: 1vh;
+    height: 1vh;
+  }
+}
+@media (max-width: 295px) {
+  .Icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+@media (max-width: 265px) {
+  .Icon {
+    width: 15px;
+    height: 15px;
+  }
+      .Icon img {
+    width: 0.5vh;
+    height: 0.5vh;
   }
 }
 .Fotter2{
