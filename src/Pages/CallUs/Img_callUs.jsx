@@ -1,5 +1,5 @@
 import React from 'react'
-import img_call from '../../assets/callus.png'
+import img_call from '../../assets/callus.avif'
 
 const Img_callUs = () => {
   return (

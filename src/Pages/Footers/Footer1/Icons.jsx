@@ -1,11 +1,11 @@
 import React from 'react'
-import facebook from '../../../assets/facebook_icon.png';
-import youtube from '../../../assets/youtube_icon.png';
-import threads from '../../../assets/threads_icon.png';
-import instgram from '../../../assets/instagram_icon.png';
+import facebook from '../../../assets/facebook_icon.avif';
+import youtube from '../../../assets/youtube_icon.avif';
+import threads from '../../../assets/threads_icon.avif';
+import instgram from '../../../assets/instagram_icon.avif';
 import Icon from './Icon';
-import tiktok from '../../../assets/tiktok_icon.png';
-import whatsapp from '../../../assets/whatsapp_icon.png'
+import tiktok from '../../../assets/tiktok_icon.avif';
+import whatsapp from '../../../assets/whatsapp_icon.avif'
 
 
 
