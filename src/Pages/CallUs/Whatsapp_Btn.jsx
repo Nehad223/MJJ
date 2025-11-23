@@ -2,7 +2,7 @@ import React from 'react'
 import Whatsapp from '../../assets/whatsapp_icon.png'
 const Whatsapp_Btn = () => {
   const openWhatsapp = () => {
-    window.open("https://wa.me/963940219610", "_blank")
+    window.open("https://wa.me/963940389427", "_blank")
   }
 
   return (
