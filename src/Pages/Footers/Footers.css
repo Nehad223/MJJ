@@ -142,7 +142,7 @@
   margin: 0;           
   padding: 20px 0; 
 }
-.Text_Fotter2 p , .Our_Mark p,.Line_Fotter h1  {  font-family: "Tajawal", sans-serif;
+.Text_Fotter2 p , .Our_Mark a p,.Line_Fotter h1  {  font-family: "Tajawal", sans-serif;
   font-weight: 400;
   color: white;
   font-size: clamp(12px, 3vw, 18px);
@@ -223,3 +223,9 @@ margin: auto;
   margin-top: -25px;
 }
 
+.Our_Mark a{
+  text-decoration: none;
+  color: inherit; /* إذا بدك نفس لون النص العادي */
+
+
+}

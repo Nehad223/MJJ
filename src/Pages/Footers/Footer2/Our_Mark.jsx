@@ -4,8 +4,14 @@ const Our_Mark = () => {
     <div className='Our_Mark'>
         <h1>لمزيد من التطبيقات و المواقع يمكنك مراسلتنا من خلال:
              </h1>
-             <p>          Novatech295@gmail.com </p>
-               <p>    963940219610+</p>
+             <a href='https://mail.google.com/mail/?view=cm&fs=1&to=novatech295@gmail.com'>
+                           <p>          Novatech295@gmail.com </p>
+             </a>
+
+             <a href="https://wa.me/963995392657">
+                   <p >963995392657+</p>
+             </a>
+          
       
     </div>
   )
