@@ -237,3 +237,90 @@
     margin-top: -20px !important;
   }
 }
+
+/* ===============================
+   HERO PROFESSIONAL ANIMATIONS
+   =============================== */
+
+/* --- TEXT REVEAL (Fade + Slide Up) --- */
+.fade-up {
+  opacity: 0;
+  transform: translateY(25px);
+  animation: fadeUp 1s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-delay-1 { animation-delay: .2s; }
+.fade-delay-2 { animation-delay: .4s; }
+.fade-delay-3 { animation-delay: .6s; }
+
+/* --- IMAGE FLOATING --- */
+.hero-float {
+  animation: floatHero 4s ease-in-out infinite;
+}
+
+@keyframes floatHero {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+/* --- BACKGROUND SMOOTH GRADIENT DRIFT --- */
+.Main {
+  background-size: 200% 200%;
+  animation: gradientShift 12s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+/* ==========================
+   MOBILE HERO ANIMATIONS
+   ========================== */
+@media (max-width: 600px) {
+
+  /* نصوص تظهر أسرع وبشكل أنظف */
+  .m-fade-up {
+    opacity: 0;
+    transform: translateY(18px);
+    animation: mFadeUp 0.65s ease forwards;
+  }
+
+  @keyframes mFadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .m-delay-1 { animation-delay: 0.15s; }
+  .m-delay-2 { animation-delay: 0.30s; }
+  .m-delay-3 { animation-delay: 0.45s; }
+
+  /* صورة أكثر هدوءاً — بدون floating */
+  .m-image-reveal {
+    opacity: 0;
+    transform: scale(0.96);
+    animation: mImgReveal 0.8s ease forwards;
+  }
+
+  @keyframes mImgReveal {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* خلفية ثابتة بدون حركة gradient للموبايل */
+  .Main {
+    animation: none !important;
+  }
+}

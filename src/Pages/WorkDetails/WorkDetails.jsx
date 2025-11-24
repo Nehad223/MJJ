@@ -7,10 +7,14 @@ export default function WorkDetails() {
   const location = useLocation();
   const workFromState = location.state?.work;
 
+  // Desktop detection
   const [isDesktop, setIsDesktop] = useState(() => {
     if (typeof window === "undefined") return true;
     return window.innerWidth >= 992;
   });
+
+  // Strong animation state
+  const [animatePage, setAnimatePage] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 992px)");
@@ -23,6 +27,11 @@ export default function WorkDetails() {
       if (mq.removeEventListener) mq.removeEventListener("change", handler);
       else mq.removeListener(handler);
     };
+  }, []);
+
+  // Trigger animation on page load
+  useEffect(() => {
+    setTimeout(() => setAnimatePage(true), 30);
   }, []);
 
   if (!workFromState) {
@@ -56,12 +65,16 @@ export default function WorkDetails() {
   ) : null;
 
   return (
-    <>
+    <div
+      className={`page-strong-enter ${
+        animatePage ? "page-strong-active" : ""
+      }`}
+    >
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg bg-body-tertiary" dir="rtl">
         <div className="container-fluid d-flex justify-content-between align-items-center">
 
-          {/* الشعار على اليمين */}
+          {/* Logo */}
           <a
             className="navbar-brand mx-lg-5"
             href="#"
@@ -71,7 +84,7 @@ export default function WorkDetails() {
             MJ+
           </a>
 
-          {/* زر الرجوع على اليسار */}
+          {/* Back Button */}
           <Link to={-1} className="btn-back me-lg-3">
             <span className="arrow">←</span>
             <span className="text">رجوع</span>
@@ -79,7 +92,7 @@ export default function WorkDetails() {
         </div>
       </nav>
 
-      {/* محتوى الصفحة */}
+      {/* Page Content */}
       <div className="wd-container mt-5 container">
         {isDesktop ? (
           <div className="wd-grid-desktop">
@@ -89,7 +102,6 @@ export default function WorkDetails() {
               )}
             </div>
 
-            {/* النص عاليمين */}
             <div className="wd-text container mt-5 text-end">
               <div className="wd-company mt-3">{company}</div>
               <h1 className="wd-title">{title || name}</h1>
@@ -117,6 +129,6 @@ export default function WorkDetails() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
