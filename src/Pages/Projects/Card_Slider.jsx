@@ -18,3 +18,4 @@ const Card_Slider = ({ Img, Text }) => {
 }
 
 export default Card_Slider;
+
