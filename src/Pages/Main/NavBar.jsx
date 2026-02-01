@@ -6,7 +6,7 @@ const NavBar = ({ onScrollTo }) => {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
-        <a className="navbar-brand mx-lg-5" href="#" onClick={(e)=>{e.preventDefault(); onScrollTo("main");}}>NT+</a>
+        <a className="navbar-brand mx-lg-5" href="#" onClick={(e)=>{e.preventDefault(); onScrollTo("main");}}>MJ+</a>
         <button
           className="navbar-toggler"
           type="button"

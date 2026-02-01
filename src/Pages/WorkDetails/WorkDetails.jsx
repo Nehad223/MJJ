@@ -81,7 +81,7 @@ export default function WorkDetails() {
             onClick={(e) => e.preventDefault()}
             style={{ fontWeight: "700", fontSize: "1.5rem" }}
           >
-         +NT
+         +MJ
           </a>
 
           {/* Back Button */}

@@ -3,7 +3,7 @@ import React from 'react'
 const Rights_Fotter2 = () => {
   return (
 <div className='Last_Fotter container'>
-  <p>© 2025 NT+. جميع الحقوق محفوظة.</p>
+  <p>© 2025 MJ+. جميع الحقوق محفوظة.</p>
   <span>
     <img src="/Logo.avif"   onClick={() => window.location.href = "https://novatech-1tne.vercel.app/"} 
   style={{ cursor: "pointer" }} />
